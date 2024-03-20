@@ -11,7 +11,7 @@ import { loggedInUser } from "../reducers/userReducer";
 import { useEffect } from "react";
 import { logout as logoutUser } from "../reducers/userReducer";
 const Layout = () => {
-  const { toastMessageDetails ,user} = useSelector(
+  const { toastMessageDetails} = useSelector(
     (state: { authUser: UserState }) => state.authUser
   );
 
@@ -33,7 +33,7 @@ const Layout = () => {
     }
   }, [isSuccess,isError]);
 
-  console.log(user);
+
   
   return (
     <div className="flex flex-col min-h-screen justify-between">

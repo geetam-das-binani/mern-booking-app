@@ -1,4 +1,9 @@
-import { DataType, LoginFormData, RegisterFormData } from "./types/types";
+import {
+  DataType,
+  HotelFormData,
+  LoginFormData,
+  RegisterFormData,
+} from "./types/types";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
 export const register = async (
   formData: RegisterFormData
@@ -49,6 +54,23 @@ export const logout = async (): Promise<{
 export const loadUser = async (): Promise<DataType> => {
   const response = await fetch(`${API_BASE_URL}/api/v1/me`, {
     credentials: "include",
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message);
+  }
+
+  return data;
+};
+export const addMyHotel = async (hotelFormData: FormData) => {
+  const response = await fetch(`${API_BASE_URL}/api/v1/create-hotel`, {
+    credentials: "include",
+    method: "POST",
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+    body: hotelFormData,
   });
 
   const data = await response.json();

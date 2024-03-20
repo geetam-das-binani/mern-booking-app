@@ -5,6 +5,7 @@ import Homepage from "../pages/Homepage";
 import Protected from "../Protected/Protected";
 import Login from "../pages/Login";
 import Contact from "../components/Contact";
+import AddHotel from "../pages/AddHotel";
 
 export const router = createBrowserRouter([
   {
@@ -48,6 +49,22 @@ export const router = createBrowserRouter([
           {
             path: "",
             element: <Contact />,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    path: "/",
+    element: <Protected />,
+    children: [
+      {
+        path: "",
+        element: <Layout />,
+        children: [
+          {
+            path: "add-hotel",
+            element: <AddHotel />,
           },
         ],
       },
