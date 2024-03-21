@@ -15,6 +15,7 @@ const ImagesSection = () => {
       p-4 border rounded"
       >
         <input
+        id="file"
           type="file"
           multiple
           accept="image/*"

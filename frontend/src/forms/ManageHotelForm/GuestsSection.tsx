@@ -13,6 +13,7 @@ const GuestsSection = () => {
         <label className="text-gray-700  text-sm font-semibold">
             Adults
           <input
+          id="adultCount"
           min={1}
           className="border rounded w-full py-1 px-3 font-normal"
           type="number" placeholder="Adults" {...register("adultCount",{required:"This field is required"})} />{" "}
@@ -25,6 +26,7 @@ const GuestsSection = () => {
         <label className="text-gray-700 text-sm font-semibold">
             Children
           <input
+          id="childCount"
           min={0}
            className="border rounded w-full py-1 px-2 font-normal"
             type="number"

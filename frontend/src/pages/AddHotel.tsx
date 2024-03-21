@@ -12,6 +12,8 @@ const AddHotel = () => {
       dispatch(showToastMessage({ message: data.message, type: "SUCCESS" }));
     },
     onError: (error: Error) => {
+     
+     
       dispatch(showToastMessage({ message: error.message, type: "ERROR" }));
     },
   });

@@ -17,6 +17,7 @@ const FacilitiesSection = () => {
             key={facilitity}
           >
             <input
+            id="facilities"
               type="checkbox"
               value={facilitity}
               {...register("facilities", {

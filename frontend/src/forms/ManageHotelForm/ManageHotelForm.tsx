@@ -25,7 +25,8 @@ const ManageHotelForm = ({
     formData.append("pricePerNight", formDataJson.pricePerNight.toString());
     formData.append("starRating", formDataJson.starRating.toString());
     formData.append("adultCount", formDataJson.adultCount.toString());
-    formData.append("childCount", formDataJson.childCount.toString());
+    formData.append("childCount", formDataJson.childCount.toString()); 
+   
 
 
     formDataJson.facilities.forEach((facility, index) => {
@@ -50,9 +51,9 @@ const ManageHotelForm = ({
           <button
             disabled={isPending}
             type="submit"
-            className="bg-blue-600 text-white font-bold p-2 hover:bg-blue-500 text-xl"
+            className="bg-blue-600 text-white font-bold p-2 hover:bg-blue-500 text-xl disabled:bg-gray-500"
           >
-            Save
+            {isPending ? "Saving..." : "Save"}
           </button>
         </span>
       </form>

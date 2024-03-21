@@ -1,6 +1,6 @@
 import {
   DataType,
-  HotelFormData,
+
   LoginFormData,
   RegisterFormData,
 } from "./types/types";
@@ -67,9 +67,7 @@ export const addMyHotel = async (hotelFormData: FormData) => {
   const response = await fetch(`${API_BASE_URL}/api/v1/create-hotel`, {
     credentials: "include",
     method: "POST",
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
+   
     body: hotelFormData,
   });
 

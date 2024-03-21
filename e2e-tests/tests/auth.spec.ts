@@ -14,7 +14,7 @@ test("should allow th user to sign in", async ({ page }) => {
   await page.locator('input[type="password"]').fill("123456789");
 
   await page.getByRole("button", { name: "Login" }).click();
-  await expect(page.getByText("Welcome Back Geetam")).toBeVisible();
+  await expect(page.getByText("Sign In Successful")).toBeVisible();
 
   await expect(page.getByRole("link", { name: "My Bookings" })).toBeVisible();
   await expect(page.getByRole("link", { name: "My Hotels" })).toBeVisible();
