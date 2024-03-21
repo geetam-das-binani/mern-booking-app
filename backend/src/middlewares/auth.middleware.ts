@@ -2,11 +2,12 @@ import { NextFunction, Request, Response } from "express";
 import { catchAsyncErrors } from "../utils/catchAsyncErrors";
 import { ErrorHandler } from "../utils/error";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import mongoose from "mongoose";
 
 declare global {
     namespace Express {
         interface Request {
-            user: string;
+            user: typeof mongoose.Schema.Types.ObjectId
         }
     }
 }
@@ -31,7 +32,7 @@ export const verifyToken = catchAsyncErrors(
         if (!decodedData) {
           return next(new ErrorHandler("Invalid token", 401));
         }
-        req.user=(decodedData as JwtPayload).id
+        req.user=(decodedData as JwtPayload).id 
         next()
     } catch (error: any) {
         return next(new ErrorHandler(error.message, 401));

@@ -4,6 +4,7 @@ import { ErrorHandler } from "../utils/error";
 import { User } from "../models/user";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import mongoose from "mongoose";
 
 
 // ! Register a user
@@ -17,11 +18,12 @@ const registerHandler = catchAsyncErrors(
     const newUser = await User.create(req.body);
 
     const token = jwt.sign(
-      { id: newUser._id },
+      { id: newUser._id  },
       process.env.JWT_SECRET as string,
       { expiresIn: "1d" }
     );
-    const userWithoutPassword = await User.findOne({ _id: newUser._id }).select(
+
+    const userWithoutPassword = await User.findById(newUser._id).select(
       "-password"
     );
     res
@@ -54,10 +56,9 @@ const loginHandler = catchAsyncErrors(
       return next(new ErrorHandler("Invalid credentials", 400));
     }
 
-    const userWithoutPassword = await User.findOne({
-      _id: existingUser._id,
-    }).select("-password");
-
+    const userWithoutPassword = await User.findById(existingUser._id).select(
+      "-password"
+    );
     const token = jwt.sign(
       { id: userWithoutPassword!._id },
       process.env.JWT_SECRET as string,
@@ -73,20 +74,24 @@ const loginHandler = catchAsyncErrors(
       })
       .json({
         success: true,
-        message: `Welcome back ${userWithoutPassword?.firstName}`,
+        message: `Sign In Successful`,
         userWithoutPassword,
       });
   }
 );
 
-const logoutHandler=catchAsyncErrors(async (req: Request, res: Response, next: NextFunction) => {
-  return res.status(200).cookie("auth-token", "", {
-    maxAge:0
-  }).json({
-   
-    message:"Logged out successfully"
-  })
-})
+const logoutHandler = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    return res
+      .status(200)
+      .cookie("auth-token", "", {
+        maxAge: 0,
+      })
+      .json({
+        message: "Logged out successfully",
+      });
+  }
+);
 //  ! Get profile of logged user
 const getProfileDetails = catchAsyncErrors(
   async (req: Request, res: Response) => {
@@ -98,4 +103,4 @@ const getProfileDetails = catchAsyncErrors(
     });
   }
 );
-export { registerHandler, loginHandler,logoutHandler, getProfileDetails };
+export { registerHandler, loginHandler, logoutHandler, getProfileDetails };
