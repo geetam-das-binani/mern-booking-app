@@ -5,7 +5,11 @@ import { NextFunction, Request, Response } from "express";
 import { ErrorHandler } from "../utils/error";
 export const handleImagesUploads =
   (imageFiles: Express.Multer.File[]) =>
-  async (req: Request, res: Response, next: NextFunction):Promise<string[] | undefined> => {
+  async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<string[] | undefined> => {
     try {
       const uploadedUrls: string[] = [];
       for (const imageFile of imageFiles) {
@@ -30,20 +34,20 @@ export const handleImagesUploads =
         fs.unlinkSync(filePath);
       }
       return uploadedUrls;
-    } catch (error:any) {
-       next(new ErrorHandler(error.message,500))
+    } catch (error: any) {
+      next(new ErrorHandler(error.message, 500));
     }
   };
 
-// alternative code: 
-    // const uploadPromises = await Promise.all(
-    //   imageFiles.map(async (imageFile) => {
-    //     const b64 = Buffer.from(imageFile.buffer).toString("base64");
-    //     let dataURI = `data:${imageFile.mimetype};base64,${b64}`;
-    //     const res=await cloudinary.uploader.upload(b64, {
-    //       folder: "hotelapp",
-    //     });
-    //     return res.secure_url;
-    //   })
-    // );
-    // 700 metres from New Market, Hotel Angina is situated in Kolkata and provides air-conditioned rooms. This 3-star hotel offers room service, a 24-hour front desk and free WiFi. The accommodation features an ATM, a tour desk and currency exchange for guests. All rooms at the hotel are fitted with a seating area, a flat-screen TV with satellite channels and a private bathroom with free toiletries and a shower. At Hotel Angina the rooms are fitted with bed linen and towels. Popular points of interest near the accommodation include Park Street Metro Station, Esplanade Metro Station and Eden Gardens. The nearest airport is Netaji Subhash Chandra Bose International Airport, 15 km from Hotel Angina.
+// alternative code:
+// const uploadPromises = await Promise.all(
+//   imageFiles.map(async (imageFile) => {
+//     const b64 = Buffer.from(imageFile.buffer).toString("base64");
+//     let dataURI = `data:${imageFile.mimetype};base64,${b64}`;
+//     const res=await cloudinary.uploader.upload(b64, {
+//       folder: "hotelapp",
+//     });
+//     return res.secure_url;
+//   })
+// );
+// 700 metres from New Market, Hotel Angina is situated in Kolkata and provides air-conditioned rooms. This 3-star hotel offers room service, a 24-hour front desk and free WiFi. The accommodation features an ATM, a tour desk and currency exchange for guests. All rooms at the hotel are fitted with a seating area, a flat-screen TV with satellite channels and a private bathroom with free toiletries and a shower. At Hotel Angina the rooms are fitted with bed linen and towels. Popular points of interest near the accommodation include Park Street Metro Station, Esplanade Metro Station and Eden Gardens. The nearest airport is Netaji Subhash Chandra Bose International Airport, 15 km from Hotel Angina.
