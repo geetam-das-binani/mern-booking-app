@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import { catchAsyncErrors } from "../utils/catchAsyncErrors";
-import { handleImagesUploads } from "../cloudinary/cloudinary";
 import { HotelType } from "../models/hotel";
 import Hotel from "../models/hotel";
 import { v2 as cloudinary } from "cloudinary";
