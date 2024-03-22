@@ -1,4 +1,4 @@
-import {HotelType} from '../../../backend/src/shared/types'
+import {HotelType} from '../../../backend/src/models/hotel'
 
 export type RegisterFormData = {
   email: string;

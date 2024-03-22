@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { catchAsyncErrors } from "../utils/catchAsyncErrors";
-import { HotelType } from "../shared/types";
-import Hotel from "../models/hotel";
+
+import Hotel, { HotelType } from "../models/hotel";
 import { v2 as cloudinary } from "cloudinary";
 import { ErrorHandler } from "../utils/error";
 
