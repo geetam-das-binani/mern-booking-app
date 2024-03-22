@@ -1,8 +1,8 @@
-import { Schema, model } from "mongoose";
+import * as mongoose from 'mongoose'
 
 export type HotelType = {
   _id: string;
-  userId: typeof Schema.Types.ObjectId;
+  userId: typeof mongoose.Schema.Types.ObjectId;
   name: string;
   country: string;
   desc: string;
@@ -18,9 +18,9 @@ export type HotelType = {
 };
 
 
-const hotelSchema = new Schema<HotelType>(
+const hotelSchema = new mongoose.Schema<HotelType>(
   {
-    userId: { type: Schema.Types.ObjectId, required: true, ref: "users" },
+    userId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "users" },
     name: { type: String, required: true },
     country: { type: String, required: true },
     desc: { type: String, required: true },
@@ -47,4 +47,4 @@ const hotelSchema = new Schema<HotelType>(
   { timestamps: true }
 );
 
-export default model<HotelType>("hotels", hotelSchema);
+export default mongoose.model<HotelType>("hotels", hotelSchema);
