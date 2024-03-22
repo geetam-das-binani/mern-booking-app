@@ -1,9 +1,8 @@
-import mongoose from "mongoose";
+import { Schema, model, Document } from "mongoose";
 
-
-export type HotelType = {
+export interface HotelType extends Document {
   _id: string;
-  userId: typeof mongoose.Schema.Types.ObjectId;
+  userId: typeof Schema.Types.ObjectId;
   name: string;
   country: string;
   desc: string;
@@ -16,12 +15,11 @@ export type HotelType = {
   pricePerNight: number;
   starRating: number;
   lastUpdated: Date;
-};
+}
 
-
-const hotelSchema = new mongoose.Schema<HotelType>(
+const hotelSchema = new Schema<HotelType>(
   {
-    userId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "users" },
+    userId: { type: Schema.Types.ObjectId, required: true, ref: "users" },
     name: { type: String, required: true },
     country: { type: String, required: true },
     desc: { type: String, required: true },
@@ -48,4 +46,4 @@ const hotelSchema = new mongoose.Schema<HotelType>(
   { timestamps: true }
 );
 
-export default mongoose.model<HotelType>("hotels", hotelSchema);
+export default model<HotelType>("hotels", hotelSchema);
