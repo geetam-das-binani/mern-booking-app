@@ -1,6 +1,9 @@
-import { Schema, model, Document } from "mongoose";
+import mongoose from "mongoose";
 
-export interface HotelType extends Document {
+const Schema = mongoose.Schema;
+const model = mongoose.model;
+
+export type HotelType = {
   _id: string;
   userId: typeof Schema.Types.ObjectId;
   name: string;
