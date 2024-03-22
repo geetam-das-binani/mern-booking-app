@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { catchAsyncErrors } from "../utils/catchAsyncErrors";
-import { HotelType } from "../models/hotel";
+import { HotelType } from "../shared/types";
 import Hotel from "../models/hotel";
 import { v2 as cloudinary } from "cloudinary";
 import { ErrorHandler } from "../utils/error";
@@ -49,4 +49,13 @@ const createHotel = catchAsyncErrors(
   }
 );
 
-export { createHotel };
+const getMyHotels=catchAsyncErrors(async(req:Request,res:Response,next:NextFunction)=>{
+  const myHotels=await Hotel.find({userId:req.user});
+ 
+  return res.status(200).json({
+    success:true,
+    hotel:myHotels,
+    message:"My hotels fetched successfully"
+  })
+})
+export { createHotel ,getMyHotels};

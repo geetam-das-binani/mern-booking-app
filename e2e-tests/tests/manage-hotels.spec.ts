@@ -25,28 +25,40 @@ test("should allow  the user to add a hotel", async ({ page }) => {
 
   await page.locator("#name").fill("Hotel Name");
 
-  await page.locator("#description").fill("Hotel Description for the test hotel");
+  await page
+    .locator("#description")
+    .fill("Hotel Description for the test hotel");
 
   await page.locator("#city").fill("Hotel Location");
   await page.locator("#country").fill("Hotel country");
   await page.locator("#pricePerNight").fill("100");
-  await page.selectOption("#starRating","3")
+  await page.selectOption("#starRating", "3");
 
-  await page.getByText("Budget").click()
+  await page.getByText("Budget").click();
 
   await page.getByLabel("Free WiFi").check();
   await page.getByLabel("Parking").check();
 
-  await page.locator("#adultCount").fill("3")
-  await page.locator("#childCount").fill("1")
+  await page.locator("#adultCount").fill("3");
+  await page.locator("#childCount").fill("1");
 
-
-  await page.setInputFiles("#file",[
-    path.join(__dirname,"files","1.jpg"),
-   
-   
-  ])
+  await page.setInputFiles("#file", [path.join(__dirname, "files", "1.jpg")]);
   await page.getByRole("button", { name: "Save" }).click();
 
-  await expect(page.getByText("Hotel created successfully")).toBeVisible();
+   await expect(page.getByText("Hotel created successfully")).toBeVisible();
+});
+
+test("should display hotels", async ({ page }) => {
+  await page.goto(`${UI_URL}my-hotels`);
+
+  await expect(page.getByRole("link", { name: "Add Hotel" })).toBeVisible();
+  await expect(page.getByText("Hotel Name")).toBeVisible();
+  await expect(page.locator('text="Hotel Description for the test hotel"')).toBeVisible();
+  await expect(page.getByText("Hotel Location,Hotel country")).toBeVisible();
+  await expect(page.getByText("Budget")).toBeVisible();
+  await expect(page.getByText("₹100 per night")).toBeVisible();
+  await expect(page.getByText("3 adults,1 children")).toBeVisible();
+  await expect(page.getByText("3 Star Rating")).toBeVisible();
+
+  await expect(page.getByRole("link", { name: "View Details" })).toBeVisible();
 });

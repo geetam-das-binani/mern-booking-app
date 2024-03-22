@@ -15,7 +15,7 @@ const ManageHotelForm = ({
 }) => {
   const formMethods = useForm<HotelFormData>({});
   const onSubmit = formMethods.handleSubmit((formDataJson: HotelFormData) => {
-    console.log(formDataJson);
+    
     const formData = new FormData();
     formData.append("name", formDataJson.name);
     formData.append("city", formDataJson.city);

@@ -6,6 +6,7 @@ import Protected from "../Protected/Protected";
 import Login from "../pages/Login";
 import Contact from "../components/Contact";
 import AddHotel from "../pages/AddHotel";
+import MyHotels from "../pages/MyHotels";
 
 export const router = createBrowserRouter([
   {
@@ -66,6 +67,10 @@ export const router = createBrowserRouter([
             path: "add-hotel",
             element: <AddHotel />,
           },
+          {
+            path:"my-hotels",
+            element:<MyHotels/>
+          }
         ],
       },
     ],

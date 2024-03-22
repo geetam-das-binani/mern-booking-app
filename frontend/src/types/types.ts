@@ -1,3 +1,5 @@
+import {HotelType} from '../../../backend/src/shared/types'
+
 export type RegisterFormData = {
   email: string;
   password: string;
@@ -45,6 +47,12 @@ export type DataType = {
   userWithoutPassword: UserType;
   message: string;
 };
+
+export type HotelDataType={
+  success:boolean,
+  hotel:HotelType[],
+  message:string
+}
 
 export type ToastProps = {
   message: string;
