@@ -1,5 +1,5 @@
-// import {HotelType} from '../../../backend/src/models/hotel'
 
+import {Schema} from 'mongoose';
 export type RegisterFormData = {
   email: string;
   password: string;
@@ -50,22 +50,12 @@ export type DataType = {
 
 export type HotelDataType={
   success:boolean,
-  hotel:{
-    _id: string;
-    userId: string;
-    name: string;
-    country: string;
-    desc: string;
-    city: string;
-    type: string;
-    adultCount: number;
-    childCount: number;
-    imageUrls: string[];
-    facilities: string[];
-    pricePerNight: number;
-    starRating: number;
-    lastUpdated: Date;
-  }[],
+  hotel:HoteType[],
+  message:string
+}
+export type HotelData ={
+  success:boolean,
+  hotel:HoteType,
   message:string
 }
 
@@ -73,3 +63,20 @@ export type ToastProps = {
   message: string;
   type: "SUCCESS" | "ERROR";
 };
+
+type HoteType ={
+  _id: string;
+  userId: typeof Schema.Types.ObjectId;
+  name: string;
+  country: string;
+  desc: string;
+  city: string;
+  type: string;
+  adultCount: number;
+  childCount: number;
+  imageUrls: string[];
+  facilities: string[];
+  pricePerNight: number;
+  starRating: number;
+  lastUpdated: Date;
+}
