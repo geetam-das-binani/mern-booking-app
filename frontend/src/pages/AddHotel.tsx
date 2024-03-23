@@ -3,12 +3,13 @@ import ManageHotelForm from "../forms/ManageHotelForm/ManageHotelForm";
 import * as apiClient from "../api-client";
 import { showToastMessage } from "../reducers/userReducer";
 import { useDispatch } from "react-redux";
+import { HotelDataType } from "../types/types";
 
 const AddHotel = () => {
   const dispatch = useDispatch();
   const { mutate, isPending } = useMutation({
     mutationFn: apiClient.addMyHotel,
-    onSuccess: (data) => {
+    onSuccess: (data:HotelDataType) => {
       dispatch(showToastMessage({ message: data.message, type: "SUCCESS" }));
     },
     onError: (error: Error) => {

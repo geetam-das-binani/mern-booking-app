@@ -1,4 +1,4 @@
-import {HotelType} from '../../../backend/src/models/hotel'
+// import {HotelType} from '../../../backend/src/models/hotel'
 
 export type RegisterFormData = {
   email: string;
@@ -50,7 +50,22 @@ export type DataType = {
 
 export type HotelDataType={
   success:boolean,
-  hotel:HotelType[],
+  hotel:{
+    _id: string;
+    userId: string;
+    name: string;
+    country: string;
+    desc: string;
+    city: string;
+    type: string;
+    adultCount: number;
+    childCount: number;
+    imageUrls: string[];
+    facilities: string[];
+    pricePerNight: number;
+    starRating: number;
+    lastUpdated: Date;
+  }[],
   message:string
 }
 
