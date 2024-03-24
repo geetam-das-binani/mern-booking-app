@@ -21,6 +21,7 @@ export type HotelFormData = {
   adultCount: number;
   childCount: number;
   imageFiles: FileList;
+  imageUrls:string[]
   facilities: string[];
   pricePerNight: number;
   starRating: number;
@@ -50,12 +51,12 @@ export type DataType = {
 
 export type HotelDataType={
   success:boolean,
-  hotel:HoteType[],
+  hotel:HotelType[],
   message:string
 }
 export type HotelData ={
   success:boolean,
-  hotel:HoteType,
+  hotel:HotelType,
   message:string
 }
 
@@ -64,7 +65,7 @@ export type ToastProps = {
   type: "SUCCESS" | "ERROR";
 };
 
-type HoteType ={
+export type HotelType ={
   _id: string;
   userId: typeof Schema.Types.ObjectId;
   name: string;

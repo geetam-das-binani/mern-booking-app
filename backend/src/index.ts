@@ -2,8 +2,8 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import "dotenv/config";
 import mongoose from "mongoose";
-import userRoutes from "./routes/users";
-import hotelRoutes from "./routes/my-hotels";
+import {router as userRoutes} from "./routes/users";
+import {router as hotelRoutes} from "./routes/my-hotels";
 import { errorMiddleware } from "./middlewares/error.middleware";
 import cookieParser from "cookie-parser";
 import path from "path";
@@ -25,8 +25,8 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-app.use("/api/v1", hotelRoutes);
 app.use("/api/v1", userRoutes);
+app.use("/api/v1", hotelRoutes);
 
 //-----------------------Deployment------------------------
 

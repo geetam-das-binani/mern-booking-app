@@ -44,7 +44,10 @@ const registerHandler = catchAsyncErrors(
 
 // ! Login a user
 const loginHandler = catchAsyncErrors(
+
+  
   async (req: Request, res: Response, next: NextFunction) => {
+    console.log('sdhg');
     const { email, password } = req.body;
     const existingUser = await User.findOne({ email }).select("+password");
 

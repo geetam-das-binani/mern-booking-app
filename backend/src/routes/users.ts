@@ -12,4 +12,4 @@ router.post('/logout',logoutHandler)
 // ! user have to be authenticated to access below routes
 router.get("/me",verifyToken,getProfileDetails)
 
-export default router 
+export  {router} 

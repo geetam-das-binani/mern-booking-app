@@ -1,4 +1,10 @@
-import { DataType, HotelDataType, LoginFormData, RegisterFormData } from "./types/types";
+import {
+  DataType,
+  HotelData,
+  HotelDataType,
+  LoginFormData,
+  RegisterFormData,
+} from "./types/types";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
 export const register = async (
   formData: RegisterFormData
@@ -20,6 +26,8 @@ export const register = async (
 };
 
 export const login = async (formData: LoginFormData): Promise<DataType> => {
+  console.log(formData);
+  
   const response = await fetch(`${API_BASE_URL}/api/v1/login`, {
     method: "POST",
     headers: {
@@ -32,6 +40,8 @@ export const login = async (formData: LoginFormData): Promise<DataType> => {
   if (!response.ok) {
     throw new Error(data.message);
   }
+  console.log(data);
+  
 
   return data;
 };
@@ -74,7 +84,7 @@ export const addMyHotel = async (hotelFormData: FormData) => {
   return data;
 };
 
-export const getMyHotels = async ():Promise<HotelDataType> => {
+export const getMyHotels = async (): Promise<HotelDataType> => {
   const response = await fetch(`${API_BASE_URL}/api/v1/get-hotels`, {
     credentials: "include",
     method: "GET",
@@ -83,5 +93,34 @@ export const getMyHotels = async ():Promise<HotelDataType> => {
   if (!response.ok) {
     throw new Error(data.message);
   }
-  return data 
+  return data;
+};
+export const fetchMyHotelById = async (hotelId: string): Promise<HotelData> => {
+  const response = await fetch(`${API_BASE_URL}/api/v1/hotel/${hotelId}`, {
+    credentials: "include",
+    method: "GET",
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message);
+  }
+  return data;
+};
+export const editMyHotelById = async (
+ 
+  hotelFormData: FormData
+): Promise<HotelData> => {
+
+
+
+  const response = await fetch(`${API_BASE_URL}/api/v1/edit/${hotelFormData.get("hotelId")}`, {
+    credentials: "include",
+    method: "PUT",
+    body: hotelFormData
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message);
+  }
+  return data;
 };

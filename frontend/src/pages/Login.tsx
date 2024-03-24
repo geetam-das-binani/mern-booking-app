@@ -4,8 +4,8 @@ import { DataType, LoginFormData, UserState } from "../types/types";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {  showToastMessage } from "../reducers/userReducer";
-import  * as apiClient from "../api-client";
+import { showToastMessage } from "../reducers/userReducer";
+import * as apiClient from "../api-client";
 const Login = () => {
   const {
     register,
@@ -13,36 +13,32 @@ const Login = () => {
     formState: { errors },
   } = useForm<LoginFormData>();
   const navigate = useNavigate();
-  const queryClient=useQueryClient()
+  const queryClient = useQueryClient();
   const { isAuthenticated } = useSelector(
     (state: { authUser: UserState }) => state.authUser
   );
   const dispatch = useDispatch();
 
-
   useEffect(() => {
     if (isAuthenticated) navigate("/");
-
-
-      
   }, [isAuthenticated]);
-
 
   //! post user login data to backend
   const { mutate, isPending } = useMutation({
     mutationFn: apiClient.login,
-    
-    onSuccess: async(data: DataType) => {
-      await queryClient.invalidateQueries({queryKey:['validate']});
+
+    onSuccess: async (data: DataType) => {
+      console.log('hye');
+      
+      await queryClient.invalidateQueries({ queryKey: ["validate"] });
       dispatch(showToastMessage({ message: data.message, type: "SUCCESS" }));
- 
+
       navigate("/");
     },
     onError: (error: Error) => {
       dispatch(showToastMessage({ message: error.message, type: "ERROR" }));
     },
   });
-  
 
   // ! when form gets submitted
   const onSubmit = handleSubmit((data) => {
@@ -78,8 +74,12 @@ const Login = () => {
         )}
       </label>
       <span className="flex items-center justify-between">
-        <span className="text-sm">Not Registererd ?
-        <Link className="underline" to="/register"> Create an account here</Link>
+        <span className="text-sm">
+          Not Registererd ?
+          <Link className="underline" to="/register">
+            {" "}
+            Create an account here
+          </Link>
         </span>
         <button
           disabled={isPending}
@@ -88,10 +88,9 @@ const Login = () => {
           disabled:bg-gray-400
           "
         >
-         Login 
+          Login
         </button>
       </span>
-
     </form>
   );
 };

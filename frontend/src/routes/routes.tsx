@@ -7,6 +7,7 @@ import Login from "../pages/Login";
 import Contact from "../components/Contact";
 import AddHotel from "../pages/AddHotel";
 import MyHotels from "../pages/MyHotels";
+import EditHotel from "../pages/EditHotel";
 
 export const router = createBrowserRouter([
   {
@@ -70,6 +71,9 @@ export const router = createBrowserRouter([
           {
             path:"my-hotels",
             element:<MyHotels/>
+          },{
+            path:"edit-hotel/:hotelId",
+            element:<EditHotel/>
           }
         ],
       },
