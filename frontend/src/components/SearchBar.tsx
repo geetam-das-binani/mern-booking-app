@@ -4,7 +4,7 @@ import { useState } from "react";
 import { saveSearchValues } from "../reducers/searchReducer";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useLocation, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 const SearchBar = () => {
   const navigate = useNavigate();
