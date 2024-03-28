@@ -4,6 +4,7 @@ import "dotenv/config";
 import mongoose from "mongoose";
 import {router as userRoutes} from "./routes/users";
 import {router as hotelRoutes} from "./routes/my-hotels";
+
 import { errorMiddleware } from "./middlewares/error.middleware";
 import cookieParser from "cookie-parser";
 import path from "path";
@@ -28,6 +29,7 @@ cloudinary.config({
 app.use("/api/v1", userRoutes);
 app.use("/api/v1", hotelRoutes);
 
+
 //-----------------------Deployment------------------------
 
 app.use(express.static(path.join(__dirname, "../../frontend/dist")));
@@ -47,6 +49,6 @@ mongoose
     app.listen(7000, () => console.log("server is running on port 7000"));
   })
   .catch((err) => {
-    console.log(err);
+    console.log(err.message);
     process.exit();
   });

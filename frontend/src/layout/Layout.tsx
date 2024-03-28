@@ -10,8 +10,9 @@ import { loadUser } from "../api-client";
 import { loggedInUser } from "../reducers/userReducer";
 import { useEffect } from "react";
 import { logout as logoutUser } from "../reducers/userReducer";
+import SearchBar from "../components/SearchBar";
 const Layout = () => {
-  const { toastMessageDetails} = useSelector(
+  const { toastMessageDetails } = useSelector(
     (state: { authUser: UserState }) => state.authUser
   );
 
@@ -20,25 +21,23 @@ const Layout = () => {
     queryFn: loadUser,
     queryKey: ["validate"],
   });
- 
+
   useEffect(() => {
     if (isSuccess) {
-      
-      
       dispatch(loggedInUser(data?.userWithoutPassword));
     }
     if (isError) {
-      dispatch(logoutUser())
-     
+      dispatch(logoutUser());
     }
-  }, [isSuccess,isError]);
+  }, [isSuccess, isError]);
 
-
-  
   return (
     <div className="flex flex-col min-h-screen justify-between">
       <Header />
       <Hero />
+      <div className="container mx-auto">
+        <SearchBar />
+      </div>
       <div className="container mx-auto py-10 flex-1">
         <Outlet />
       </div>

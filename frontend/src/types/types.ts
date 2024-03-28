@@ -1,5 +1,5 @@
+import { Schema } from "mongoose";
 
-import {Schema} from 'mongoose';
 export type RegisterFormData = {
   email: string;
   password: string;
@@ -21,7 +21,7 @@ export type HotelFormData = {
   adultCount: number;
   childCount: number;
   imageFiles: FileList;
-  imageUrls:string[]
+  imageUrls: string[];
   facilities: string[];
   pricePerNight: number;
   starRating: number;
@@ -49,23 +49,23 @@ export type DataType = {
   message: string;
 };
 
-export type HotelDataType={
-  success:boolean,
-  hotel:HotelType[],
-  message:string
-}
-export type HotelData ={
-  success:boolean,
-  hotel:HotelType,
-  message:string
-}
+export type HotelDataType = {
+  success: boolean;
+  hotel: HotelType[];
+  message: string;
+};
+export type HotelData = {
+  success: boolean;
+  hotel: HotelType;
+  message: string;
+};
 
 export type ToastProps = {
   message: string;
   type: "SUCCESS" | "ERROR";
 };
 
-export type HotelType ={
+export type HotelType = {
   _id: string;
   userId: typeof Schema.Types.ObjectId;
   name: string;
@@ -80,4 +80,38 @@ export type HotelType ={
   pricePerNight: number;
   starRating: number;
   lastUpdated: Date;
+};
+
+export type SearchCriteria = {
+  destination: string;
+  checkIn: string;
+  checkOut: string;
+  adultCount: number;
+  childCount: number;
+  hotelId?: string;
+};
+
+export interface SearchParams {
+  destination?: string;
+  checkIn?: string;
+  checkOut?: string;
+  adultCount?: string;
+  childCount?: string;
+  page?: string;
+  facilities?:string[]
+  types?:string[]
+  stars?:string[]
+  maxPrice?:string
+  sortOption?:string
 }
+
+export type HotelSearchResponse = {
+  response: {
+    data: HotelType[];
+    pagination: {
+      total: number;
+      page: number;
+      pages: number;
+    };
+  };
+};

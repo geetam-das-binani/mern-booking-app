@@ -6,10 +6,15 @@ import {
   getMyHotels,
   editHotel,
   getSingleHotelDetails,
+  searchHandler
 } from "../controllers/hotels.controllers";
 import { upload } from "../multer/multer";
 
 const router = express.Router();
+router.route("/search")
+.get(searchHandler)
+
+
 router.use(verifyToken);
 router.post(
   "/create-hotel",
@@ -18,12 +23,15 @@ router.post(
   upload.array("imageFiles", 6),
   createHotel
 );
-router.get("/get-hotels", getMyHotels);
-router.get("/hotel/:id", getSingleHotelDetails);
-router.put(
-  "/edit/:id",
-hotelValidator(),
-  upload.array("imageFiles", 6),
-  editHotel
-);
+  router.get("/get-hotels", getMyHotels);
+  router.get("/hotel/:id", getSingleHotelDetails);
+  router.put(
+    "/edit/:id",
+  hotelValidator(),
+    upload.array("imageFiles", 6),
+    editHotel
+  );
+
+
+
 export { router };

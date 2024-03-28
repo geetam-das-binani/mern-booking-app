@@ -8,6 +8,7 @@ import Contact from "../components/Contact";
 import AddHotel from "../pages/AddHotel";
 import MyHotels from "../pages/MyHotels";
 import EditHotel from "../pages/EditHotel";
+import Search from "../pages/Search";
 
 export const router = createBrowserRouter([
   {
@@ -18,6 +19,13 @@ export const router = createBrowserRouter([
         path: "",
         element: <Homepage />,
       },
+      {
+        path:"search",
+        element:<Search />
+      },{
+        path:"detail/:hotelId",
+        element:<h1>detail</h1>
+      }
     ],
   },
   {

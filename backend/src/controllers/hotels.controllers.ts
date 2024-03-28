@@ -5,6 +5,7 @@ import Hotel, { HotelType } from "../models/hotel";
 import { v2 as cloudinary } from "cloudinary";
 import { ErrorHandler } from "../utils/error";
 import { log } from "console";
+import { HotelSearchResponse } from "../shared/types";
 
 const createHotel = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -98,6 +99,8 @@ const editHotel = catchAsyncErrors(
     });
   }
 );
+
+//  ! upload images to cloudinary
 async function uploadImages(imageFiles: Express.Multer.File[]) {
   return await Promise.all(
     imageFiles.map(async (imageFile) => {
@@ -110,4 +113,122 @@ async function uploadImages(imageFiles: Express.Multer.File[]) {
     })
   );
 }
-export { createHotel, getMyHotels, getSingleHotelDetails, editHotel };
+
+const searchHandler = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const query = constructSearchQuery(req.query);
+    let sortOptions = {};
+    switch (req.query.sortOption) {
+     
+      case "pricePerNightAscending":
+        sortOptions = { pricePerNight: 1 };
+        break;
+      case "pricePerNightDescending":
+        sortOptions = { pricePerNight: -1 };
+        break;
+      case "starRatingAscending":
+        sortOptions = { starRating: 1 };
+        break
+        case "starRatingDescending":
+          sortOptions = { starRating: -1 };
+          break
+      case "lastUpdated":
+        sortOptions = { lastUpdated: -1 };
+        break;
+    }
+    const pageSize = 5;
+    let pageNumber = parseInt(req.query.page as string) || 1;
+    const skip = pageSize * (pageNumber - 1);
+    const hotels = await Hotel.find(query)
+      .sort(sortOptions)
+      .limit(pageSize)
+      .skip(skip);
+
+    const total = await Hotel.countDocuments(query);
+
+    const response: HotelSearchResponse = {
+      data: hotels,
+      pagination: {
+        total,
+        page: pageNumber,
+        pages: Math.ceil(total / pageSize),
+      },
+    };
+
+    res.status(200).json({
+      response,
+    });
+  }
+);
+
+function constructSearchQuery(queryParams: any) {
+  let constructedQuery: any = {};
+  if (queryParams.destination) {
+    constructedQuery.$or = [
+      { city: new RegExp(queryParams.destination, "i") },
+      {
+        country: {
+          $regex: queryParams.destination,
+          $options: "i",
+        },
+      },
+    ];
+  }
+  if (queryParams.adultCount) {
+    constructedQuery.adultCount = {
+      $gte: parseInt(queryParams.adultCount),
+    };
+  }
+  if (queryParams.childCount) {
+    constructedQuery.childCount = {
+      $gte: parseInt(queryParams.childCount),
+    };
+  }
+
+  if (queryParams.facilities) {
+    constructedQuery.facilities = {
+      $all: Array.isArray(queryParams.facilities)
+        ? queryParams.facilities
+        : [queryParams.facilities],
+    };
+  }
+
+  if (queryParams.types) {
+    constructedQuery.type = {
+      $in: Array.isArray(queryParams.types)
+        ? queryParams.types
+        : [queryParams.types],
+    };
+  }
+
+  if (queryParams.stars) {
+    const starRatings = Array.isArray(queryParams.stars)
+      ? queryParams.stars.map((star: string) => parseInt(star))
+      : parseInt(queryParams.stars);
+    if (Array.isArray(starRatings)) {
+      constructedQuery.starRating = {
+        $in: starRatings,
+      };
+    } else {
+      constructedQuery.starRating = {
+        $eq: starRatings,
+      };
+    }
+    // const starRating = parseInt(queryParams.stars.toString());
+    // constructedQuery.starRating = { $eq: starRating };
+  }
+  if (queryParams.maxPrice) {
+    constructedQuery.pricePerNight = {
+      $lte: parseInt(queryParams.maxPrice.toString()),
+    };
+  }
+
+  return constructedQuery;
+}
+export {
+  createHotel,
+  getMyHotels,
+  getSingleHotelDetails,
+  editHotel,
+  searchHandler,
+};
