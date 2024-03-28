@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { SearchCriteria } from "../types/types";
 import { useQuery } from "@tanstack/react-query";
 import * as apiClient from "../api-client";
