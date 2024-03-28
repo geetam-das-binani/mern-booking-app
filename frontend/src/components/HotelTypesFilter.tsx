@@ -20,6 +20,7 @@ const HotelTypesFilter = ({ selectedTypes, onChange }: Props) => {
           className="rounded"
         />
         <span>{type} </span>
+        
       </label>
     ))}
   </div>

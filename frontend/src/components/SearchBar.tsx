@@ -32,7 +32,7 @@ const SearchBar = () => {
         destination,
       })
     );
-
+//! whenever any of the above change just invalidate the query and refetch again
     queryClient.invalidateQueries({ queryKey: ["search", search] });
 
     navigate("/search");
@@ -58,6 +58,7 @@ items-center gap-4
           value={destination}
           onChange={(e) => setDestination(e.target.value)}
           placeholder="Destination"
+          name="destination"
         />
       </div>
       <div className="flex py-1 gap-2  bg-white px-2">
