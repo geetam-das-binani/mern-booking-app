@@ -1,5 +1,10 @@
 import { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import { DataType, LoginFormData, UserState } from "../types/types";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
@@ -18,9 +23,19 @@ const Login = () => {
     (state: { authUser: UserState }) => state.authUser
   );
   const dispatch = useDispatch();
+  const params = useSearchParams()[0];
+  const queryParams = [...new URLSearchParams(params).keys()];
+
 
   useEffect(() => {
-    if (isAuthenticated) navigate("/");
+    if (isAuthenticated) {
+      if (queryParams.length > 0) {
+        const id=new URLSearchParams(params).get(queryParams[0] as string)
+        navigate(`/${queryParams[0]}/${id}`);
+      } else {
+        navigate("/");
+      }
+    }
   }, [isAuthenticated]);
 
   //! post user login data to backend
@@ -28,12 +43,10 @@ const Login = () => {
     mutationFn: apiClient.login,
 
     onSuccess: async (data: DataType) => {
-      console.log('hye');
-      
       await queryClient.invalidateQueries({ queryKey: ["validate"] });
       dispatch(showToastMessage({ message: data.message, type: "SUCCESS" }));
-
-      navigate("/");
+    //  navigate(location.state?.from?.pathname || "/");
+    // location comes from use location 
     },
     onError: (error: Error) => {
       dispatch(showToastMessage({ message: error.message, type: "ERROR" }));

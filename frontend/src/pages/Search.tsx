@@ -109,7 +109,7 @@ const Search = () => {
         onChange={handleSortOptionChange}/>
         </div>
         {hotelData?.response?.data?.map((hotel) => (
-          <SearchResultsCard key={hotel._id} hotel={hotel} />
+          <SearchResultsCard key={hotel?.name} hotel={hotel} />
         ))}
         <div>
           {hotelData?.response?.data?.length ? (

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ValidationChain, body, validationResult } from "express-validator";
+import { ValidationChain, body, param, validationResult } from "express-validator";
 import { ErrorHandler } from "../utils/error";
 
 export const validator = (req: Request, res: Response, next: NextFunction) => {
@@ -61,3 +61,7 @@ export const hotelValidator = (): ValidationChain[] => [
     .isLength({min:1})
     .withMessage("Facilities are required")
 ];
+
+export const hotelIdValidator=():ValidationChain[]=>[
+  param("id").notEmpty().withMessage("Id is required")
+]
