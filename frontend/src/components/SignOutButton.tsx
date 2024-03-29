@@ -1,13 +1,11 @@
-import { useLocation, useNavigate } from "react-router-dom";
 import * as apiClient from "../api-client";
 import { useDispatch } from "react-redux";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { showToastMessage } from "../reducers/userReducer";
 const SignOutButton = () => {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
+
   const dispatch = useDispatch();
-  const { pathname } = useLocation();
 
   const { mutate } = useMutation({
     mutationFn: apiClient.logout,
@@ -15,15 +13,6 @@ const SignOutButton = () => {
     onSuccess: async (data: { message: string }) => {
       await queryClient.invalidateQueries({ queryKey: ["validate"] });
       dispatch(showToastMessage({ message: data.message, type: "SUCCESS" }));
-
-      if (pathname !== "/") {
-        const [path, id] = pathname.split("/").filter((path) => path);
-        
-
-        navigate(`/login?${path}=${id}`);
-      } else {
-        navigate("/login");
-      }
     },
   });
   const handleLogout = () => {
