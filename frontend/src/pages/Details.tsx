@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import * as apiClient from "../api-client";
 import GuestInfoForm from "../forms/GuestsInfoFrom/GuestInfoForm";
