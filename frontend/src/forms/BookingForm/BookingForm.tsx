@@ -48,7 +48,7 @@ const BookingForm = ({ currentUser, paymentIntent }: Props) => {
       totalPrice: paymentIntent.amount,
     },
   });
-  const { mutate: bookRoom, status } = useMutation({
+  const { mutate: bookRoom } = useMutation({
     mutationFn: apiClient.makeRoomBooking,
     onSuccess: (data: BookingResponse) => {
       dispatch(showToastMessage({ message: data.message, type: "SUCCESS" }));
