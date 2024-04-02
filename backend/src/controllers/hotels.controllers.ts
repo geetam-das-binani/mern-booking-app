@@ -5,7 +5,8 @@ import Hotel, { HotelType } from "../models/hotel";
 import { v2 as cloudinary } from "cloudinary";
 import { ErrorHandler } from "../utils/error";
 import { log } from "console";
-import { HotelSearchResponse } from "../shared/types";
+import { HotelSearchResponse, MyBookingsData } from "../shared/types";
+import mongoose from "mongoose";
 
 const createHotel = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -119,7 +120,6 @@ const searchHandler = catchAsyncErrors(
     const query = constructSearchQuery(req.query);
     let sortOptions = {};
     switch (req.query.sortOption) {
-     
       case "pricePerNightAscending":
         sortOptions = { pricePerNight: 1 };
         break;
@@ -128,10 +128,10 @@ const searchHandler = catchAsyncErrors(
         break;
       case "starRatingAscending":
         sortOptions = { starRating: 1 };
-        break
-        case "starRatingDescending":
-          sortOptions = { starRating: -1 };
-          break
+        break;
+      case "starRatingDescending":
+        sortOptions = { starRating: -1 };
+        break;
       case "lastUpdated":
         sortOptions = { lastUpdated: -1 };
         break;
@@ -161,8 +161,32 @@ const searchHandler = catchAsyncErrors(
   }
 );
 
+const getAllMyBookings = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const allHotelsWithMyIdInBookings = await Hotel.find({
+      bookings: { $elemMatch: { userId: req.user.toString() } },
+    });
+    const myBookings: MyBookingsData[] = allHotelsWithMyIdInBookings.map(
+      (hotel):MyBookingsData => {
+        const bookings = hotel.bookings.filter(
+          (booking) => booking.userId.toString() === req.user.toString()
+        );
+        return {
+          ...hotel.toObject(),
+          bookings,
+        };
+      }
+    );
+
+    res.json({
+      hotel: myBookings,
+    });
+  }
+);
+
 function constructSearchQuery(queryParams: any) {
   let constructedQuery: any = {};
+
   if (queryParams.destination) {
     constructedQuery.$or = [
       { city: new RegExp(queryParams.destination, "i") },
@@ -231,4 +255,5 @@ export {
   getSingleHotelDetails,
   editHotel,
   searchHandler,
+  getAllMyBookings,
 };

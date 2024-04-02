@@ -11,7 +11,13 @@ import { loggedInUser } from "../reducers/userReducer";
 import { useEffect } from "react";
 import { logout as logoutUser } from "../reducers/userReducer";
 import SearchBar from "../components/SearchBar";
+
+
+
 const Layout = () => {
+ 
+
+  
   const { toastMessageDetails } = useSelector(
     (state: { authUser: UserState }) => state.authUser
   );
@@ -39,7 +45,7 @@ const Layout = () => {
         <SearchBar />
       </div>
       <div className="container mx-auto py-10 flex-1">
-        <Outlet />
+        <Outlet  />
       </div>
       <Footer />
       {toastMessageDetails && (

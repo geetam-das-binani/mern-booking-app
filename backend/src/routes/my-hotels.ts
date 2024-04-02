@@ -11,6 +11,7 @@ import {
   editHotel,
   getSingleHotelDetails,
   searchHandler,
+  getAllMyBookings,
 } from "../controllers/hotels.controllers";
 import { upload } from "../multer/multer";
 
@@ -21,6 +22,7 @@ router
   .get(hotelIdValidator(), validator, getSingleHotelDetails);
 
 router.use(verifyToken);
+//! user have to be logged in for accessing below routes
 router.post(
   "/create-hotel",
 
@@ -35,6 +37,12 @@ router.put(
   hotelValidator(),
   upload.array("imageFiles", 6),
   editHotel
+);
+
+router.get(
+  "/mybookings",
+
+  getAllMyBookings
 );
 
 export { router };

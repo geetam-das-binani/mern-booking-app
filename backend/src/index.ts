@@ -4,6 +4,7 @@ import "dotenv/config";
 import mongoose from "mongoose";
 import {router as userRoutes} from "./routes/users";
 import {router as hotelRoutes} from "./routes/my-hotels";
+import {router as paymentRoutes} from "./routes/payment";
 
 import { errorMiddleware } from "./middlewares/error.middleware";
 import cookieParser from "cookie-parser";
@@ -28,6 +29,7 @@ cloudinary.config({
 
 app.use("/api/v1", userRoutes);
 app.use("/api/v1", hotelRoutes);
+app.use("/api/v1", paymentRoutes);
 
 
 //-----------------------Deployment------------------------

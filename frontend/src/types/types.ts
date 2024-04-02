@@ -98,11 +98,11 @@ export interface SearchParams {
   adultCount?: string;
   childCount?: string;
   page?: string;
-  facilities?:string[]
-  types?:string[]
-  stars?:string[]
-  maxPrice?:string
-  sortOption?:string
+  facilities?: string[];
+  types?: string[];
+  stars?: string[];
+  maxPrice?: string;
+  sortOption?: string;
 }
 
 export type HotelSearchResponse = {
@@ -116,9 +116,43 @@ export type HotelSearchResponse = {
   };
 };
 
-export type GuestInfoFormData={
+export type GuestInfoFormData = {
   checkIn: Date;
   checkOut: Date;
   adultCount: number;
   childCount: number;
+};
+
+export type BookingFormData = {
+  email: string;
+  firstName: string;
+  lastName: string;
+  hotelId: string;
+  checkIn: string;
+  checkOut: string;
+  adultCount: number;
+  childCount: number;
+  paymentIntentId: string;
+  totalPrice: number;
+};
+
+export type BookingResponse = {
+  success: boolean;
+  message: string;
+};
+
+export interface MyBookingsResponse extends HotelType {
+  bookings: {
+    checkIn: Date;
+    checkOut: Date;
+    adultCount: number;
+    childCount: number;
+    totalPrice: number;
+    paymentStatus: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    userId: typeof Schema.Types.ObjectId;
+    _id: string;
+  }[];
 }

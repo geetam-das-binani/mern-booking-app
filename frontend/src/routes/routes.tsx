@@ -1,15 +1,19 @@
 import { createBrowserRouter } from "react-router-dom";
+import { Suspense, lazy } from "react";
 import Layout from "../layout/Layout";
-import Register from "../pages/Register";
-import Homepage from "../pages/Homepage";
 import Protected from "../Protected/Protected";
-import Login from "../pages/Login";
-import Contact from "../components/Contact";
-import AddHotel from "../pages/AddHotel";
-import MyHotels from "../pages/MyHotels";
-import EditHotel from "../pages/EditHotel";
-import Search from "../pages/Search";
-import DetailsSection from "../pages/Details";
+import Booking from "../pages/Booking";
+import Error from "../error/Error";
+const Register = lazy(() => import("../pages/Register"));
+const Homepage = lazy(() => import("../pages/Homepage"));
+const Login = lazy(() => import("../pages/Login"));
+const AddHotel = lazy(() => import("../pages/AddHotel"));
+const MyHotels = lazy(() => import("../pages/MyHotels"));
+const EditHotel = lazy(() => import("../pages/EditHotel"));
+const Search = lazy(() => import("../pages/Search"));
+const Details = lazy(() => import("../pages/Details"));
+const MyBookings = lazy(() => import("../pages/MyBookings"));
+const Contact = lazy(() => import("../pages/Contact"));
 
 export const router = createBrowserRouter([
   {
@@ -18,53 +22,64 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <Homepage />,
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <Homepage />
+          </Suspense>
+        ),
+        errorElement: <Error />,
       },
       {
-        path:"search",
-        element:<Search />
-      },{
-        path:"detail/:hotelId",
-        element:<DetailsSection/>
-      }
-    ],
-  },
-  {
-    path: "/register",
-    element: <Layout />,
-    children: [
+        path: "search",
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            {" "}
+            <Search />
+          </Suspense>
+        ),
+        errorElement: <Error />,
+      },
       {
-        path: "",
-        element: <Register />,
+        path: "detail/:hotelId",
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <Details />
+          </Suspense>
+        ),
+        errorElement: <Error />,
+      },
+      {
+        path: "register",
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            {" "}
+            <Register />
+          </Suspense>
+        ),
+        errorElement: <Error />,
+      },
+      {
+        path: "login",
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <Login />
+          </Suspense>
+        ),
+        errorElement: <Error />,
+      },
+      {
+        path: "contact",
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            {" "}
+            <Contact />
+          </Suspense>
+        ),
+        errorElement: <Error />,
       },
     ],
   },
-  {
-    path: "/login",
-    element: <Layout />,
-    children: [
-      {
-        path: "",
-        element: <Login />,
-      },
-    ],
-  },
-  {
-    path: "/contact",
-    element: <Protected />,
-    children: [
-      {
-        path: "",
-        element: <Layout />,
-        children: [
-          {
-            path: "",
-            element: <Contact />,
-          },
-        ],
-      },
-    ],
-  },
+
   {
     path: "/",
     element: <Protected />,
@@ -75,17 +90,51 @@ export const router = createBrowserRouter([
         children: [
           {
             path: "add-hotel",
-            element: <AddHotel />,
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <AddHotel />
+              </Suspense>
+            ),
+            errorElement: <Error />,
           },
           {
-            path:"my-hotels",
-            element:<MyHotels/>
-          },{
-            path:"edit-hotel/:hotelId",
-            element:<EditHotel/>
-          }
+            path: "my-hotels",
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <MyHotels />
+              </Suspense>
+            ),
+            errorElement: <Error />,
+          },
+          {
+            path: "edit-hotel/:hotelId",
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <EditHotel />
+              </Suspense>
+            ),
+            errorElement: <Error />,
+          },
+          {
+            path: "hotel/:hotelId/booking",
+            element: <Booking />,
+            errorElement: <Error />,
+          },
+          {
+            path: "my-bookings",
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <MyBookings />
+              </Suspense>
+            ),
+            errorElement: <Error />,
+          },
         ],
       },
     ],
+  },
+  {
+    path: "*",
+    element: <div>Page Not Found</div>,
   },
 ]);

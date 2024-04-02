@@ -1,10 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
 import { SearchCriteria } from "../types/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { saveSearchValues } from "../reducers/searchReducer";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 const SearchBar = () => {
   const navigate = useNavigate();
@@ -20,9 +20,13 @@ const SearchBar = () => {
   const [adultCount, setAdultCount] = useState<number>(search.adultCount);
   const [childCount, setChildCount] = useState<number>(search.childCount);
 
-
+  const minDate = new Date();
+  const maxDate = new Date();
+  maxDate.setFullYear(maxDate.getFullYear() + 1);
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    console.log(123);
+
     dispatch(
       saveSearchValues({
         adultCount,
@@ -32,15 +36,60 @@ const SearchBar = () => {
         destination,
       })
     );
-//! whenever any of the above change just invalidate the query and refetch again
+    //! whenever any of the above change just invalidate the query and refetch again
     queryClient.invalidateQueries({ queryKey: ["search", search] });
 
     navigate("/search");
   };
 
-  const minDate = new Date();
-  const maxDate = new Date();
-  maxDate.setFullYear(maxDate.getFullYear() + 1);
+  const handleClear = () => {
+    setDestination("");
+    setCheckIn(new Date().toISOString());
+    setCheckOut(new Date().toISOString());
+    setAdultCount(1);
+    setChildCount(0);
+
+    dispatch(
+      saveSearchValues({
+        destination: "",
+        checkIn: new Date().toISOString(),
+        checkOut: new Date().toISOString(),
+        adultCount: 1,
+        childCount: 0,
+      })
+    );
+  };
+
+  useEffect(() => {
+    if (
+     
+      checkIn ||
+      checkOut ||
+      adultCount ||
+      childCount ||
+      destination
+    ) {
+      dispatch(
+        saveSearchValues({
+          adultCount,
+          checkIn,
+          checkOut,
+          childCount,
+          destination,
+        })
+      );
+    }
+  }, [checkIn, checkOut, adultCount, childCount]);
+  useEffect(() => {
+    let timeoutId = setTimeout(() => {
+      dispatch(saveSearchValues({
+        ...search,
+        destination
+      }))
+      
+    }, 1000);
+    return () => clearTimeout(timeoutId);
+  }, [destination]);
   return (
     <form
       onSubmit={handleSubmit}
@@ -108,16 +157,26 @@ items-center gap-4
           endDate={new Date(checkOut)}
           minDate={minDate}
           maxDate={maxDate}
-          placeholderText="Check-in Date"
+          placeholderText="Check-out Date"
           wrapperClassName="min-w-full"
           className="min-w-full bg-white p-2 focus:outline-none"
         />
       </div>
       <div className="flex gap-1">
-        <button className="w-2/3 bg-blue-600 text-white h-full p-2 font-bold text-xl hover:bg-blue-500">
+        <button
+          className="w-2/3 bg-blue-600
+         text-white h-full p-2 font-bold text-xl
+          hover:bg-blue-500"
+          type="submit"
+        >
           Search
         </button>
-        <button className="w-1/3 bg-red-600 text-white h-full p-2 font-bold text-xl hover:bg--500">
+        <button
+          type="button"
+          onClick={handleClear}
+          className="w-1/3
+         bg-red-600 hover:bg-red-500 text-white h-full p-2 font-bold text-xl hover:bg--500"
+        >
           Clear
         </button>
       </div>
