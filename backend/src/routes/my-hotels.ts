@@ -8,6 +8,7 @@ import { verifyToken } from "../middlewares/auth.middleware";
 import {
   createHotel,
   getMyHotels,
+  getAllHotels,
   editHotel,
   getSingleHotelDetails,
   searchHandler,
@@ -16,6 +17,8 @@ import {
 import { upload } from "../multer/multer";
 
 const router = express.Router();
+router.route("/allhotels")
+.get(getAllHotels)
 router.route("/search").get(searchHandler);
 router
   .route("/hotel/:id")

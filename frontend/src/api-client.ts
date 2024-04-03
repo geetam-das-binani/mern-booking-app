@@ -5,6 +5,7 @@ import {
   HotelData,
   HotelDataType,
   HotelSearchResponse,
+  Hotels,
   LoginFormData,
   MyBookingsResponse,
   RegisterFormData,
@@ -98,6 +99,19 @@ export const getMyHotels = async (): Promise<HotelDataType> => {
   if (!response.ok) {
     throw new Error(data.message);
   }
+  return data;
+};
+
+export const fetchHotels = async () :Promise<Hotels>=> {
+
+  const response = await fetch(`${API_BASE_URL}/api/v1/allhotels`);
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message);
+  }
+
+
   return data;
 };
 export const fetchMyHotelById = async (hotelId: string): Promise<HotelData> => {

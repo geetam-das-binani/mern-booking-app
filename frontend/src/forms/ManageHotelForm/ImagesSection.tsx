@@ -43,7 +43,7 @@ console.log(existingImageUrls);
                 />
                 <button
                   onClick={(e) => handleDelete(e, imageUrl)}
-                  className="absolute flex items-center inset-0 justify-center text-white  bg-black bg-opacity-50 opacity-0
+                  className="absolute flex items-center  inset-0 justify-center text-white  bg-black bg-opacity-50 opacity-0
                 group-hover:opacity-100
                 "
                 >

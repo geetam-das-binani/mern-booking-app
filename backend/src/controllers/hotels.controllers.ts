@@ -1,12 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { catchAsyncErrors } from "../utils/catchAsyncErrors";
-
 import Hotel, { HotelType } from "../models/hotel";
 import { v2 as cloudinary } from "cloudinary";
 import { ErrorHandler } from "../utils/error";
-import { log } from "console";
 import { HotelSearchResponse, MyBookingsData } from "../shared/types";
-import mongoose from "mongoose";
+
 
 const createHotel = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -74,6 +72,7 @@ const editHotel = catchAsyncErrors(
     const imageFiles = req.files as Express.Multer.File[];
     let imageUrls = req.body.imageUrls;
 
+
     //! upload the images to cloudinary
     const imageUrlsFromCloudinary = await uploadImages(imageFiles);
 
@@ -101,19 +100,7 @@ const editHotel = catchAsyncErrors(
   }
 );
 
-//  ! upload images to cloudinary
-async function uploadImages(imageFiles: Express.Multer.File[]) {
-  return await Promise.all(
-    imageFiles.map(async (imageFile) => {
-      const b64 = Buffer.from(imageFile.buffer).toString("base64");
-      let dataURI = `data:${imageFile.mimetype};base64,${b64}`;
-      const res = await cloudinary.uploader.upload(dataURI, {
-        folder: "hotelapp",
-      });
-      return res.secure_url;
-    })
-  );
-}
+
 
 const searchHandler = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -191,6 +178,39 @@ const getAllMyBookings = catchAsyncErrors(
   }
 );
 
+const getAllHotels = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+   
+    
+    const hotels = await Hotel.find({}).sort({
+      lastUpdated: -1,
+    });
+    if (hotels.length === 0) {
+      return res.status(200).json({
+        hotels: [],
+      });
+    }
+  
+    
+   return res.status(200).json({
+      hotels
+    });
+  }
+);
+
+//  ! upload images to cloudinary
+async function uploadImages(imageFiles: Express.Multer.File[]) {
+  return await Promise.all(
+    imageFiles.map(async (imageFile) => {
+      const b64 = Buffer.from(imageFile.buffer).toString("base64");
+      let dataURI = `data:${imageFile.mimetype};base64,${b64}`;
+      const res = await cloudinary.uploader.upload(dataURI, {
+        folder: "hotelapp",
+      });
+      return res.secure_url;
+    })
+  );
+}
 function constructSearchQuery(queryParams: any) {
   let constructedQuery: any = {};
 
@@ -256,6 +276,7 @@ function constructSearchQuery(queryParams: any) {
 
   return constructedQuery;
 }
+
 export {
   createHotel,
   getMyHotels,
@@ -263,4 +284,5 @@ export {
   editHotel,
   searchHandler,
   getAllMyBookings,
+  getAllHotels,
 };

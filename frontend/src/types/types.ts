@@ -156,3 +156,7 @@ export interface MyBookingsResponse extends HotelType {
     _id: string;
   }[];
 }
+
+export interface Hotels{
+  hotels:MyBookingsResponse[]
+}
