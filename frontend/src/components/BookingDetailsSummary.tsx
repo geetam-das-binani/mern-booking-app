@@ -1,3 +1,6 @@
+
+
+
 type Props = {
   hotel: {
     _id: string;

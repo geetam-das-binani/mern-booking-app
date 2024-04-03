@@ -15,9 +15,6 @@ import SearchBar from "../components/SearchBar";
 
 
 const Layout = () => {
- 
-
-  
   const { toastMessageDetails } = useSelector(
     (state: { authUser: UserState }) => state.authUser
   );

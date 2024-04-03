@@ -165,9 +165,16 @@ const getAllMyBookings = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     const allHotelsWithMyIdInBookings = await Hotel.find({
       bookings: { $elemMatch: { userId: req.user.toString() } },
+    }).sort({
+      createdAt: -1,
     });
+    if (allHotelsWithMyIdInBookings.length === 0) {
+      return res.json({
+        hotel: [],
+      });
+    }
     const myBookings: MyBookingsData[] = allHotelsWithMyIdInBookings.map(
-      (hotel):MyBookingsData => {
+      (hotel): MyBookingsData => {
         const bookings = hotel.bookings.filter(
           (booking) => booking.userId.toString() === req.user.toString()
         );
