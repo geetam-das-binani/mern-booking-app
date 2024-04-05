@@ -6,6 +6,8 @@ export type UserType = {
   password: string;
   firstName: string;
   lastName: string;
+  isAdmin:boolean;
+  avatar:string
 };
 const userSchema = new Schema<UserType>(
   {
@@ -13,6 +15,13 @@ const userSchema = new Schema<UserType>(
     password: { type: String, required: true, select: false },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
+    isAdmin:{type:Boolean,default:false},
+    avatar:{
+      
+        type:String,
+        required:true
+      
+    }
   },
   { timestamps: true }
 );

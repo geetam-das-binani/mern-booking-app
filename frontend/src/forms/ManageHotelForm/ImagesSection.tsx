@@ -11,7 +11,7 @@ const ImagesSection = () => {
   } = useFormContext<HotelFormData>();
 
   const existingImageUrls = watch("imageUrls")
-console.log(existingImageUrls);
+
 
   
   const handleDelete = async (

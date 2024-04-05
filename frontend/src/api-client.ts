@@ -8,20 +8,20 @@ import {
   Hotels,
   LoginFormData,
   MyBookingsResponse,
-  RegisterFormData,
+
   SearchParams,
 } from "./types/types";
 import { PaymentIntentResponse } from "../../backend/src/shared/types";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
 export const register = async (
-  formData: RegisterFormData
+  formData: FormData
 ): Promise<DataType> => {
+
+  
   const response = await fetch(`${API_BASE_URL}/api/v1/register`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(formData),
+  
+    body: formData,
     credentials: "include",
   });
   const data = await response.json();
@@ -33,8 +33,6 @@ export const register = async (
 };
 
 export const login = async (formData: LoginFormData): Promise<DataType> => {
-  console.log(formData);
-
   const response = await fetch(`${API_BASE_URL}/api/v1/login`, {
     method: "POST",
     headers: {
@@ -47,7 +45,6 @@ export const login = async (formData: LoginFormData): Promise<DataType> => {
   if (!response.ok) {
     throw new Error(data.message);
   }
-  console.log(data);
 
   return data;
 };
@@ -102,15 +99,13 @@ export const getMyHotels = async (): Promise<HotelDataType> => {
   return data;
 };
 
-export const fetchHotels = async () :Promise<Hotels>=> {
-
+export const fetchHotels = async (): Promise<Hotels> => {
   const response = await fetch(`${API_BASE_URL}/api/v1/allhotels`);
 
   const data = await response.json();
   if (!response.ok) {
     throw new Error(data.message);
   }
-
 
   return data;
 };
@@ -225,6 +220,22 @@ export const fetchMyBookings = async (): Promise<{
   });
   const data = await response.json();
   console.log(data);
+
+  if (!response.ok) {
+    throw new Error(data.message);
+  }
+  return data;
+};
+
+export const updateUserProfile = async (
+  formData: FormData
+): Promise<DataType> => {
+  const response = await fetch(`${API_BASE_URL}/api/v1/update`, {
+    credentials: "include",
+    method: "POST",
+    body: formData,
+  });
+  const data = await response.json();
 
   if (!response.ok) {
     throw new Error(data.message);

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { BookingType } from "../shared/types";
+import { BookingType, ReviewType } from "../shared/types";
 import { bookingSchema } from "./booking";
 
 const Schema = mongoose.Schema;
@@ -21,6 +21,7 @@ export type HotelType = {
   starRating: number;
   lastUpdated: Date;
   bookings: BookingType[];
+  reviews: ReviewType[];
 };
 
 const hotelSchema = new Schema<HotelType>(
@@ -48,6 +49,30 @@ const hotelSchema = new Schema<HotelType>(
     pricePerNight: { type: Number, required: true },
     starRating: { type: Number, required: true, min: 1, max: 5 },
     lastUpdated: { type: Date, required: true },
+    reviews: [
+      {
+        name: {
+          type: String,
+          required: true,
+        },
+        rating: {
+          type: Number,
+          required: true,
+        },
+        comment: {
+          type: String,
+          required: true,
+        },
+        userId: {
+          type: String,
+          required: true,
+        },
+        avatar: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
     bookings: [bookingSchema],
   },
   { timestamps: true }

@@ -1,5 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import { ValidationChain, body, param, validationResult } from "express-validator";
+import {
+  ValidationChain,
+  body,
+  check,
+  param,
+  validationResult,
+} from "express-validator";
 import { ErrorHandler } from "../utils/error";
 
 export const validator = (req: Request, res: Response, next: NextFunction) => {
@@ -8,7 +14,6 @@ export const validator = (req: Request, res: Response, next: NextFunction) => {
     return next();
   }
   console.log(errors);
-  
 
   return next(
     new ErrorHandler(
@@ -36,6 +41,8 @@ export const registerValidator = (): ValidationChain[] => [
   body("lastName").notEmpty().withMessage("Last name is required"),
 ];
 
+
+
 export const loginValidator = (): ValidationChain[] => [
   body("email")
     .notEmpty()
@@ -58,10 +65,10 @@ export const hotelValidator = (): ValidationChain[] => [
   body("facilities")
     .notEmpty()
     .isArray()
-    .isLength({min:1})
-    .withMessage("Facilities are required")
+    .isLength({ min: 1 })
+    .withMessage("Facilities are required"),
 ];
 
-export const hotelIdValidator=():ValidationChain[]=>[
-  param("id").notEmpty().withMessage("Id is required")
-]
+export const hotelIdValidator = (): ValidationChain[] => [
+  param("id").notEmpty().withMessage("Id is required"),
+];

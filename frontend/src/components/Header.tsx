@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 
 import SignOutButton from "./SignOutButton";
 const Header = () => {
-  const { isAuthenticated } = useSelector(
+  const { isAuthenticated,user } = useSelector(
     (state: { authUser: UserState }) => state.authUser
   );
 
@@ -19,6 +19,14 @@ const Header = () => {
         <span className="flex space-x-2">
           {isAuthenticated ? (
             <>
+             <Link
+                className="flex items-center text-white
+              px-3 font-bold hover:bg-blue-600
+              "
+                to="/"
+              >
+               Home
+              </Link>
               <Link
                 className="flex items-center text-white
               px-3 font-bold hover:bg-blue-600
@@ -31,11 +39,13 @@ const Header = () => {
                 className="flex items-center text-white
               px-3 font-bold hover:bg-blue-600
               "
-                to="/contact"
+                to="/profile"
               >
-                Contact
+               Profile
               </Link>
-              <Link
+             {
+              user?.isAdmin  && (
+                <Link
                 className="flex items-center text-white
                px-3 font-bold hover:bg-blue-600
                "
@@ -43,6 +53,8 @@ const Header = () => {
               >
                 My Hotels
               </Link>
+              )
+             }
               <SignOutButton />
             </>
           ) : (

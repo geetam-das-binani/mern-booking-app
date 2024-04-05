@@ -1,15 +1,31 @@
-import express from 'express'
-import { registerHandler,getProfileDetails,loginHandler,logoutHandler} from '../controllers/users.controllers'
-import { registerValidator, validator ,loginValidator} from '../validator/validator'
-import { verifyToken } from '../middlewares/auth.middleware'
+import express from "express";
+import {
+  registerHandler,
+  getProfileDetails,
+  loginHandler,
+  logoutHandler,
+  updateHandler,
+} from "../controllers/users.controllers";
+import {
+ 
+  validator,
+  loginValidator,
 
-const router=express.Router()
+} from "../validator/validator";
+import { verifyToken } from "../middlewares/auth.middleware";
+import { upload } from "../multer/multer";
+const router = express.Router();
 
-
-router.post("/register", registerValidator() ,validator,registerHandler)
-router.post("/login", loginValidator() ,validator,loginHandler)
-router.post('/logout',logoutHandler)
+router.post("/register",upload.single("photo"), registerHandler);
+router.post("/login", loginValidator(), validator, loginHandler);
+router.post("/logout", logoutHandler);
+router.post(
+  "/update",
+  verifyToken,
+  upload.single("photo"),
+  updateHandler
+);
 // ! user have to be authenticated to access below routes
-router.get("/me",verifyToken,getProfileDetails)
+router.get("/me", verifyToken, getProfileDetails);
 
-export  {router} 
+export { router };

@@ -10,10 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@chakra-ui/react": "^2.8.2",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
     "@reduxjs/toolkit": "^2.2.1",
     "@stripe/react-stripe-js": "^2.6.2",
     "@stripe/stripe-js": "^3.1.0",
     "@tanstack/react-query": "^5.27.5",
+    "framer-motion": "^11.0.24",
     "mongoose": "^8.2.3",
     "react": "^18.2.0",
     "react-datepicker": "^6.6.0",

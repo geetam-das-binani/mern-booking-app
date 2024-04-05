@@ -7,7 +7,7 @@ import "./index.css";
 import { router } from "./routes/routes.tsx";
 import { Provider } from "react-redux";
 import { store } from "./store/store.ts";
-
+import { ChakraProvider } from '@chakra-ui/react'
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -18,10 +18,12 @@ const queryClient = new QueryClient({
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
+    <ChakraProvider>
     <QueryClientProvider client={queryClient}>
       <Provider store={store}>
         <RouterProvider router={router} />
       </Provider>
     </QueryClientProvider>
+  </ChakraProvider>
   </React.StrictMode>
 );

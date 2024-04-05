@@ -14,7 +14,8 @@ const Search = lazy(() => import("../pages/Search"));
 const Details = lazy(() => import("../pages/Details"));
 const MyBookings = lazy(() => import("../pages/MyBookings"));
 const Contact = lazy(() => import("../pages/Contact"));
-
+const Profile = lazy(() => import("../pages/Profile"))
+const UpdateProfile = lazy(() => import("../pages/UpdateProfile"));
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -88,6 +89,23 @@ export const router = createBrowserRouter([
         path: "",
         element: <Layout />,
         children: [
+          {
+            path: "profile",
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <Profile />
+              </Suspense>
+            ),
+            errorElement: <Error />,
+          },{
+            path: "update",
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <UpdateProfile />
+              </Suspense>
+            ),
+            errorElement: <Error />,
+          },
           {
             path: "add-hotel",
             element: (

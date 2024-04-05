@@ -24,15 +24,18 @@ const Layout = () => {
     queryFn: loadUser,
     queryKey: ["validate"],
   });
-
+  
+  
   useEffect(() => {
     if (isSuccess) {
+      
+      
       dispatch(loggedInUser(data?.userWithoutPassword));
     }
     if (isError) {
       dispatch(logoutUser());
     }
-  }, [isSuccess, isError]);
+  }, [isSuccess, isError,data]);
 
   return (
     <div className="flex flex-col min-h-screen justify-between">

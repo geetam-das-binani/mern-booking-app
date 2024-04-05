@@ -3,8 +3,7 @@ import { catchAsyncErrors } from "../utils/catchAsyncErrors";
 import Hotel, { HotelType } from "../models/hotel";
 import { v2 as cloudinary } from "cloudinary";
 import { ErrorHandler } from "../utils/error";
-import { HotelSearchResponse, MyBookingsData } from "../shared/types";
-
+import { HotelSearchResponse, MyBookingsData, ReviewType } from "../shared/types";
 
 const createHotel = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -72,7 +71,6 @@ const editHotel = catchAsyncErrors(
     const imageFiles = req.files as Express.Multer.File[];
     let imageUrls = req.body.imageUrls;
 
-
     //! upload the images to cloudinary
     const imageUrlsFromCloudinary = await uploadImages(imageFiles);
 
@@ -99,8 +97,6 @@ const editHotel = catchAsyncErrors(
     });
   }
 );
-
-
 
 const searchHandler = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -180,8 +176,6 @@ const getAllMyBookings = catchAsyncErrors(
 
 const getAllHotels = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
-   
-    
     const hotels = await Hotel.find({}).sort({
       lastUpdated: -1,
     });
@@ -190,10 +184,59 @@ const getAllHotels = catchAsyncErrors(
         hotels: [],
       });
     }
-  
-    
-   return res.status(200).json({
-      hotels
+
+    return res.status(200).json({
+      hotels,
+    });
+  }
+);
+
+const reviewHandler = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const hotelId = req.params.id as string;
+    const {
+      rating,
+      comment,
+      name,
+      avatar,
+    }:ReviewType =
+      req.body;
+    let hotel = await Hotel.findById(hotelId);
+    if (!hotel) return next(new ErrorHandler("Hotel not found", 404));
+    const reviewObject = {
+      userId: req.user.toString(),
+      rating,
+      comment,
+      name,
+      avatar,
+    };
+
+    const isReviewed = hotel?.reviews?.find(
+      (review) => review.userId.toString() === req.user.toString()
+    );
+    if (isReviewed) {
+      const updatedReviews = hotel?.reviews?.map((review) =>
+        review?.userId?.toString() === req.user.toString()
+          ? reviewObject
+          : review
+      );
+      hotel.reviews = updatedReviews;
+      await hotel.save();
+      return res.status(200).json({
+        success: true,
+        message: "Review updated successfully",
+      });
+    }
+    hotel=await Hotel.findByIdAndUpdate(
+      hotelId,
+      { $push: { reviews: reviewObject } },
+      { new: true }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Review posted successfully",
+      hotel
     });
   }
 );
@@ -211,6 +254,7 @@ async function uploadImages(imageFiles: Express.Multer.File[]) {
     })
   );
 }
+
 function constructSearchQuery(queryParams: any) {
   let constructedQuery: any = {};
 
@@ -285,4 +329,5 @@ export {
   searchHandler,
   getAllMyBookings,
   getAllHotels,
+  reviewHandler,
 };

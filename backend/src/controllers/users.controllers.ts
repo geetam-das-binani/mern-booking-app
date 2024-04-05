@@ -4,21 +4,31 @@ import { ErrorHandler } from "../utils/error";
 import { User } from "../models/user";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-
-
-
+import { v2 as cloudinary } from "cloudinary";
 // ! Register a user
 const registerHandler = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
+   
     let user = await User.findOne({ email: req.body.email });
     if (user) {
       return next(new ErrorHandler("user already exists", 400));
     }
 
+    const photo = req.file as Express.Multer.File;
+   
+
+    
+    
+    const b64 = Buffer.from(photo.buffer).toString("base64");
+    let dataURI = `data:${photo.mimetype};base64,${b64}`;
+    const cloudinaryRes = await cloudinary.uploader.upload(dataURI, {
+      folder: "hotelapp",
+    });
+    req.body.avatar = cloudinaryRes.secure_url;
     const newUser = await User.create(req.body);
 
     const token = jwt.sign(
-      { id: newUser._id  },
+      { id: newUser._id },
       process.env.JWT_SECRET as string,
       { expiresIn: "1d" }
     );
@@ -44,10 +54,8 @@ const registerHandler = catchAsyncErrors(
 
 // ! Login a user
 const loginHandler = catchAsyncErrors(
-
-  
   async (req: Request, res: Response, next: NextFunction) => {
-    console.log('sdhg');
+    console.log("sdhg");
     const { email, password } = req.body;
     const existingUser = await User.findOne({ email }).select("+password");
 
@@ -83,6 +91,37 @@ const loginHandler = catchAsyncErrors(
   }
 );
 
+const updateHandler = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    // ! if user has selected new avatar upload it to cloudinary
+    const photo = req.file as Express.Multer.File;
+    if (photo) {
+      const b64 = Buffer.from(photo.buffer).toString("base64");
+      let dataURI = `data:${photo.mimetype};base64,${b64}`;
+      const res = await cloudinary.uploader.upload(dataURI, {
+        folder: "hotelapp",
+      });
+      req.body.avatar = res.secure_url;
+    }
+    const user = await User.findByIdAndUpdate(
+      req.user.toString(),
+      {
+        $set: req.body,
+      },
+      { new: true }
+    ).select("-password");
+    if (!user) {
+      return next(new ErrorHandler("User not found", 404));
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      userWithoutPassword: user,
+    });
+  }
+);
+
 const logoutHandler = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     return res
@@ -106,4 +145,10 @@ const getProfileDetails = catchAsyncErrors(
     });
   }
 );
-export { registerHandler, loginHandler, logoutHandler, getProfileDetails };
+export {
+  registerHandler,
+  loginHandler,
+  logoutHandler,
+  getProfileDetails,
+  updateHandler,
+};

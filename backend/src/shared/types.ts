@@ -63,3 +63,11 @@ export interface MyBookingsData extends HotelType {
     _id: string;
   }[];
 }
+
+export type ReviewType = {
+  userId: string;
+  rating: number;
+  comment: string;
+  name: string;
+  avatar: string;
+};

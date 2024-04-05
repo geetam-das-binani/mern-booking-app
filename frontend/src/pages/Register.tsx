@@ -3,10 +3,10 @@ import { DataType, RegisterFormData, UserState } from "../types/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as apiClient from "../api-client";
 import { useDispatch, useSelector } from "react-redux";
-import {  showToastMessage } from "../reducers/userReducer";
+import { showToastMessage } from "../reducers/userReducer";
 
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const Register = () => {
   const {
@@ -16,23 +16,27 @@ const Register = () => {
     formState: { errors },
   } = useForm<RegisterFormData>();
   const navigate = useNavigate();
-  const queryClient=useQueryClient()
+  const [file, setFile] = useState<File | null>(null);
+  const queryClient = useQueryClient();
   const { isAuthenticated } = useSelector(
     (state: { authUser: UserState }) => state.authUser
   );
 
-
   const dispatch = useDispatch();
-
-
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputFile = e.target.files?.[0];
+    if (inputFile) {
+      setFile(inputFile);
+    }
+  };
   // ! post user registration data to backend
   const { mutate, isPending } = useMutation({
     mutationFn: apiClient.register,
 
-    onSuccess: async(data: DataType) => {
-      await queryClient.invalidateQueries({queryKey:['validate']});
+    onSuccess: async (data: DataType) => {
+      await queryClient.invalidateQueries({ queryKey: ["validate"] });
       dispatch(showToastMessage({ message: data.message, type: "SUCCESS" }));
-      
+
       navigate("/");
     },
     onError: (error: Error) => {
@@ -41,8 +45,18 @@ const Register = () => {
   });
 
   // !when form gets form submitted
-  const onSubmit = handleSubmit((data) => {
-    mutate(data);
+  const onSubmit = handleSubmit((data: RegisterFormData) => {
+    const formData = new FormData() as FormData;
+    formData.append("firstName", data.firstName);
+    formData.append("lastName", data.lastName);
+    formData.append("email", data.email);
+    formData.append("password", data.password);
+    formData.append("confirmPassword", data.confirmPassword);
+    formData.append("photo", file as File);
+
+    // ! fix photo issue not coming showing undefined
+
+    mutate(formData);
   });
 
   useEffect(() => {
@@ -128,6 +142,17 @@ const Register = () => {
         {errors.confirmPassword && (
           <span className="text-red-500">{errors.confirmPassword.message}</span>
         )}
+      </label>
+      <label className="text-gray-700 text-sm font-bold flex-1">
+        Choose Photo
+        <input
+          className="border rounded w-full py-1 px-2 font-normal"
+          onChange={handleAvatarChange}
+          type="file"
+          name="photo"
+          accept="image/*"
+          required
+        />
       </label>
       <span>
         <button

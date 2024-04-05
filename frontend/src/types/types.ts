@@ -1,4 +1,5 @@
 import { Schema } from "mongoose";
+import { ReviewType } from "../../../backend/src/shared/types";
 
 export type RegisterFormData = {
   email: string;
@@ -6,6 +7,7 @@ export type RegisterFormData = {
   firstName: string;
   lastName: string;
   confirmPassword: string;
+ 
 };
 export type LoginFormData = {
   email: string;
@@ -32,6 +34,8 @@ export type UserType = {
   email: string;
   firstName: string;
   lastName: string;
+  isAdmin:boolean;
+  avatar:string
   createdAt?: Date;
   updatedAt?: Date;
 };
@@ -43,6 +47,10 @@ export type UserState = {
   isLoggedIn: boolean;
 };
 
+export type ToastProps = {
+  message: string;
+  type: "SUCCESS" | "ERROR";
+};
 export type DataType = {
   success: boolean;
   userWithoutPassword: UserType;
@@ -60,10 +68,7 @@ export type HotelData = {
   message: string;
 };
 
-export type ToastProps = {
-  message: string;
-  type: "SUCCESS" | "ERROR";
-};
+
 
 export type HotelType = {
   _id: string;
@@ -80,6 +85,7 @@ export type HotelType = {
   pricePerNight: number;
   starRating: number;
   lastUpdated: Date;
+  reviews:ReviewType[]
 };
 
 export type SearchCriteria = {

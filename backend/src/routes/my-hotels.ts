@@ -13,12 +13,13 @@ import {
   getSingleHotelDetails,
   searchHandler,
   getAllMyBookings,
+  reviewHandler
 } from "../controllers/hotels.controllers";
 import { upload } from "../multer/multer";
 
+
 const router = express.Router();
-router.route("/allhotels")
-.get(getAllHotels)
+router.route("/allhotels").get(getAllHotels);
 router.route("/search").get(searchHandler);
 router
   .route("/hotel/:id")
@@ -47,5 +48,6 @@ router.get(
 
   getAllMyBookings
 );
+router.post("/reviews/:id",reviewHandler)
 
 export { router };
