@@ -7,7 +7,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ReviewResponse, UserState } from "../types/types";
 import ReviewModal from "../modal/ReviewModal";
-import { assignRef, useDisclosure } from "@chakra-ui/react";
+import {  useDisclosure } from "@chakra-ui/react";
 import { showToastMessage } from "../reducers/userReducer";
 
 const Details = () => {
