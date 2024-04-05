@@ -194,6 +194,8 @@ const getAllHotels = catchAsyncErrors(
 const reviewHandler = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     const hotelId = req.params.id as string;
+    console.log('called');
+    
     const {
       rating,
       comment,
@@ -201,6 +203,8 @@ const reviewHandler = catchAsyncErrors(
       avatar,
     }:ReviewType =
       req.body;
+      
+      
     let hotel = await Hotel.findById(hotelId);
     if (!hotel) return next(new ErrorHandler("Hotel not found", 404));
     const reviewObject = {
@@ -212,7 +216,7 @@ const reviewHandler = catchAsyncErrors(
     };
 
     const isReviewed = hotel?.reviews?.find(
-      (review) => review.userId.toString() === req.user.toString()
+      (review) => review?.userId?.toString() === req.user.toString()
     );
     if (isReviewed) {
       const updatedReviews = hotel?.reviews?.map((review) =>
@@ -236,7 +240,7 @@ const reviewHandler = catchAsyncErrors(
     return res.status(200).json({
       success: true,
       message: "Review posted successfully",
-      hotel
+     
     });
   }
 );

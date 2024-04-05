@@ -166,3 +166,8 @@ export interface MyBookingsResponse extends HotelType {
 export interface Hotels{
   hotels:MyBookingsResponse[]
 }
+
+export type ReviewResponse={
+  message:string;
+  success:boolean
+}

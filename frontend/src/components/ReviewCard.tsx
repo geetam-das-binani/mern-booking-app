@@ -1,6 +1,8 @@
 import { ReviewType } from "../../../backend/src/shared/types";
 
 const ReviewCard = ({ reviews }: { reviews: ReviewType }) => {
+
+  
   return (
     <div
       className="bg-gray-100 border

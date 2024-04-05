@@ -9,9 +9,11 @@ import {
   LoginFormData,
   MyBookingsResponse,
 
+  ReviewResponse,
+
   SearchParams,
 } from "./types/types";
-import { PaymentIntentResponse } from "../../backend/src/shared/types";
+import { PaymentIntentResponse, ReviewType } from "../../backend/src/shared/types";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
 export const register = async (
   formData: FormData
@@ -234,6 +236,27 @@ export const updateUserProfile = async (
     credentials: "include",
     method: "POST",
     body: formData,
+  });
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message);
+  }
+  return data;
+};
+
+
+export const addReview=async(formDataJson:ReviewType):Promise<ReviewResponse>=>{
+  console.log(formDataJson)
+
+  
+  const response = await fetch(`${API_BASE_URL}/api/v1/reviews/${formDataJson.hotelId}`, {
+    credentials: "include",
+    method: "POST",
+    body:JSON.stringify(formDataJson),
+    headers:{
+      "Content-Type": "application/json",
+    }
   });
   const data = await response.json();
 

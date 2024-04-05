@@ -1,42 +1,77 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import * as apiClient from "../api-client";
 import GuestInfoForm from "../forms/GuestsInfoFrom/GuestInfoForm";
 import ReviewCard from "../components/ReviewCard";
 import { useState } from "react";
-import { useSelector } from "react-redux";
-import { UserState } from "../types/types";
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
-  FormControl,
-  FormLabel,
-  Input,
-  Button,
-} from '@chakra-ui/react'
+import { useDispatch, useSelector } from "react-redux";
+import { ReviewResponse, UserState } from "../types/types";
+import ReviewModal from "../modal/ReviewModal";
+import { assignRef, useDisclosure } from "@chakra-ui/react";
+import { showToastMessage } from "../reducers/userReducer";
+
 const Details = () => {
+  const queryClient = useQueryClient();
   const { hotelId } = useParams();
   const [comment, setComment] = useState<string>("");
   const [rating, setRating] = useState<number>(0);
+  const dispatch = useDispatch();
   const user = useSelector(
     (state: { authUser: UserState }) => state.authUser.user
   );
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const { data: hotelData } = useQuery({
     queryKey: ["hotel", hotelId],
     queryFn: () => apiClient.fetchMyHotelById(hotelId || ""),
     enabled: !!hotelId, //! only call if hotelid is present if it is present it will fetch automatically
   });
 
+  const { mutate } = useMutation({
+    mutationFn: apiClient.addReview,
+    onSuccess: async (data: ReviewResponse) => {
+      await queryClient.invalidateQueries({ queryKey: ["hotel", hotelId] });
+      dispatch(showToastMessage({ message: data.message, type: "SUCCESS" }));
+    },
+    onError: (error: Error) => {
+      dispatch(showToastMessage({ message: error.message, type: "ERROR" }));
+    },
+  });
+
   if (!hotelData) {
     return <></>;
   }
+  const handleRating = (rating: number) => {
+    setRating(rating);
+  };
+  const handleComment = (comment: string) => {
+    setComment(comment);
+  };
+
+  const handleSave = () => {
+    if (!comment || rating === 0) {
+      dispatch(
+        showToastMessage({
+          message: "Please add comment and rating",
+          type: "ERROR",
+        })
+      );
+      onClose();
+      return;
+    }
+    const formDataJson = {
+      rating,
+      comment,
+      name: `${user?.firstName} ${user?.lastName}`,
+      avatar: user?.avatar as string,
+      hotelId,
+      
+    };
+
+    mutate(formDataJson);
+    setComment("");
+    setRating(0);
+    onClose();
+  };
   return (
     <div className="grid space-y-6">
       <div>
@@ -48,10 +83,20 @@ const Details = () => {
         <div className="flex gap-8">
           <h1 className="text-3xl font-bold">{hotelData?.hotel?.name}</h1>
           <button
-          onClick={onOpen}
-          className="rounded-full p-3 bg-blue-500 text-white fony-bold hover:bg-blue-600 cursor-pointer">
+            onClick={onOpen}
+            className="rounded-full p-3 bg-blue-500 text-white fony-bold hover:bg-blue-600 cursor-pointer"
+          >
             Want to add Review ?
           </button>
+          <ReviewModal
+            isOpen={isOpen}
+            onClose={onClose}
+            rating={rating}
+            comment={comment}
+            handleRating={handleRating}
+            handleComment={handleComment}
+            onSave={handleSave}
+          />
         </div>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -78,15 +123,14 @@ const Details = () => {
       {/* user reviews */}
       {hotelData?.hotel?.reviews?.length > 0 && (
         <div
-          className="md:w-[800px] w-[550px]  overflow-x-scroll
-        
-        "
-        >
+          className="md:w-[800px] w-[550px]  overflow-x-scroll">
           <p className="text-2xl font-bold">Reviews</p>
 
           <div className="flex gap-2 w-full md:h-[150px] p-1 ">
             {hotelData?.hotel?.reviews?.map((reviews) => (
-              <ReviewCard reviews={reviews} />
+              <ReviewCard
+              key={reviews._id}
+              reviews={reviews} />
             ))}
           </div>
         </div>
@@ -100,41 +144,7 @@ const Details = () => {
             pricePerNight={hotelData?.hotel?.pricePerNight}
           />
         </div>
-
       </div>
-
-
-      <Modal
-        
-      
-        isOpen={isOpen}
-        onClose={onClose}
-      >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Create your account</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody pb={6}>
-            <FormControl>
-              <FormLabel>First name</FormLabel>
-              <Input placeholder='First name' />
-            </FormControl>
-
-            <FormControl mt={4}>
-              <FormLabel>Last name</FormLabel>
-              <Input placeholder='Last name' />
-            </FormControl>
-          </ModalBody>
-
-          <ModalFooter>
-            <Button colorScheme='blue' mr={3}>
-              Save
-            </Button>
-            <Button onClick={onClose}>Cancel</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    
     </div>
   );
 };
