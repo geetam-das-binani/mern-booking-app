@@ -76,7 +76,7 @@ const loginHandler = catchAsyncErrors(
       { expiresIn: "1d" }
     );
     res
-      .status(201)
+      .status(200)
       .cookie("auth-token", token, {
         httpOnly: true,
         secure: true,

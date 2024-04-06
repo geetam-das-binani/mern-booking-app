@@ -3,7 +3,11 @@ import { catchAsyncErrors } from "../utils/catchAsyncErrors";
 import Hotel, { HotelType } from "../models/hotel";
 import { v2 as cloudinary } from "cloudinary";
 import { ErrorHandler } from "../utils/error";
-import { HotelSearchResponse, MyBookingsData, ReviewType } from "../shared/types";
+import {
+  HotelSearchResponse,
+  MyBookingsData,
+  ReviewType,
+} from "../shared/types";
 
 const createHotel = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -194,57 +198,76 @@ const getAllHotels = catchAsyncErrors(
 const reviewHandler = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     const hotelId = req.params.id as string;
-    console.log('called');
-    
-    const {
-      rating,
-      comment,
-      name,
-      avatar,
-    }:ReviewType =
-      req.body;
-      
-      
-    let hotel = await Hotel.findById(hotelId);
-    if (!hotel) return next(new ErrorHandler("Hotel not found", 404));
-    const reviewObject = {
-      userId: req.user.toString(),
-      rating,
-      comment,
-      name,
-      avatar,
-    };
 
-    const isReviewed = hotel?.reviews?.find(
-      (review) => review?.userId?.toString() === req.user.toString()
-    );
-    if (isReviewed) {
-      const updatedReviews = hotel?.reviews?.map((review) =>
-        review?.userId?.toString() === req.user.toString()
-          ? reviewObject
-          : review
+    const { rating, comment, name, avatar }: ReviewType = req.body;
+
+    let hotel = await Hotel.findById(hotelId);
+
+    if (hotel?._id) {
+      const reviewObject = {
+        userId: req.user.toString(),
+        rating,
+        comment,
+        name,
+        avatar,
+      };
+
+      const isReviewed = hotel?.reviews?.find(
+        (review) => review?.userId?.toString() === req.user.toString()
       );
-      hotel.reviews = updatedReviews;
-      await hotel.save();
+      let updatedReviews: ReviewType[] = [];
+      if (isReviewed) {
+        updatedReviews = hotel?.reviews?.map((review) =>
+          review?.userId?.toString() === req.user.toString()
+            ? reviewObject
+            : review
+        );
+        hotel.reviews = updatedReviews;
+      } else {
+        hotel = await Hotel.findByIdAndUpdate(
+          hotelId,
+          { $push: { reviews: reviewObject } },
+          { new: true }
+        );
+        updatedReviews = hotel?.reviews as ReviewType[];
+      }
+
+      let averageStaRating =
+        updatedReviews.reduce((sum, review) => sum + review.rating, 0) /
+        updatedReviews.length;
+      hotel!.starRating = Math.floor(averageStaRating);
+      await hotel?.save();
       return res.status(200).json({
         success: true,
-        message: "Review updated successfully",
+        message: `Review ${isReviewed ? "updated" : "added"} successfully`,
       });
+    } else {
+      return next(new ErrorHandler("Hotel not found", 404));
     }
-    hotel=await Hotel.findByIdAndUpdate(
-      hotelId,
-      { $push: { reviews: reviewObject } },
-      { new: true }
-    );
-
-    return res.status(200).json({
-      success: true,
-      message: "Review posted successfully",
-     
-    });
   }
 );
 
+const deleteHandler = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const hotelId = req.params.id as string;
+    if (!hotelId) {
+      return next(new ErrorHandler("Hotel not found", 404));
+    }
+    const hotel = await Hotel.findById(hotelId);
+    if (!hotel) return next(new ErrorHandler("Hotel not found", 404));
+
+    const updatedReviews = hotel?.reviews?.filter(
+      (review) => review.userId?.toString() !== req.user.toString()
+    );
+    hotel!.reviews = updatedReviews;
+    await hotel.save()
+
+    return res.status(200).json({
+      success: true,
+      message: "Review deleted successfully",
+    });
+  }
+);
 //  ! upload images to cloudinary
 async function uploadImages(imageFiles: Express.Multer.File[]) {
   return await Promise.all(
@@ -334,4 +357,5 @@ export {
   getAllMyBookings,
   getAllHotels,
   reviewHandler,
+  deleteHandler,
 };

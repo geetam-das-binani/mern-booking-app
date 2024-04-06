@@ -13,7 +13,8 @@ import {
   getSingleHotelDetails,
   searchHandler,
   getAllMyBookings,
-  reviewHandler
+  reviewHandler,
+  deleteHandler
 } from "../controllers/hotels.controllers";
 import { upload } from "../multer/multer";
 
@@ -49,5 +50,6 @@ router.get(
   getAllMyBookings
 );
 router.post("/reviews/:id",reviewHandler)
+router.post("/reviews/delete/:id",deleteHandler)
 
 export { router };

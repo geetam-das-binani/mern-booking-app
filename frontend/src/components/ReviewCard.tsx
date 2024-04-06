@@ -6,7 +6,7 @@ const ReviewCard = ({ reviews }: { reviews: ReviewType }) => {
   return (
     <div
       className="bg-gray-100 border
-  w-[50%] flex flex-col justify-center items-center
+  w-[40%] flex flex-col justify-center items-center
     border-slate-300 rounded-md p-4"
     >
       <div>

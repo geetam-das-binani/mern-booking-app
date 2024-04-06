@@ -7,8 +7,10 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ReviewResponse, UserState } from "../types/types";
 import ReviewModal from "../modal/ReviewModal";
-import {  useDisclosure } from "@chakra-ui/react";
+import { useDisclosure } from "@chakra-ui/react";
 import { showToastMessage } from "../reducers/userReducer";
+import DeleteButton from "../components/DeleteButton";
+import AddReviewButton from "../components/AddReviewButton";
 
 const Details = () => {
   const queryClient = useQueryClient();
@@ -16,8 +18,8 @@ const Details = () => {
   const [comment, setComment] = useState<string>("");
   const [rating, setRating] = useState<number>(0);
   const dispatch = useDispatch();
-  const user = useSelector(
-    (state: { authUser: UserState }) => state.authUser.user
+  const { user, isAuthenticated } = useSelector(
+    (state: { authUser: UserState }) => state.authUser
   );
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { data: hotelData } = useQuery({
@@ -64,7 +66,6 @@ const Details = () => {
       name: `${user?.firstName} ${user?.lastName}`,
       avatar: user?.avatar as string,
       hotelId,
-      
     };
 
     mutate(formDataJson);
@@ -82,12 +83,16 @@ const Details = () => {
         </span>
         <div className="flex gap-8">
           <h1 className="text-3xl font-bold">{hotelData?.hotel?.name}</h1>
-          <button
-            onClick={onOpen}
-            className="rounded-full p-3 bg-blue-500 text-white fony-bold hover:bg-blue-600 cursor-pointer"
-          >
-            Want to add Review ?
-          </button>
+          {/* add review button */}
+          <AddReviewButton onOpen={onOpen} />
+
+          {/* delete review button */}
+          {isAuthenticated &&
+            hotelData?.hotel?.reviews?.length > 0 &&
+            hotelData?.hotel?.reviews?.some(
+              (review) => review.userId?.toString() === user?._id.toString()
+            ) && <DeleteButton hotelId={hotelId || ""} />}
+
           <ReviewModal
             isOpen={isOpen}
             onClose={onClose}
@@ -122,15 +127,12 @@ const Details = () => {
       </div>
       {/* user reviews */}
       {hotelData?.hotel?.reviews?.length > 0 && (
-        <div
-          className="md:w-[800px] w-[550px]  overflow-x-scroll">
+        <div className="md:w-[800px] w-[550px]  overflow-x-scroll">
           <p className="text-2xl font-bold">Reviews</p>
 
           <div className="flex gap-2 w-full md:h-[150px] p-1 ">
             {hotelData?.hotel?.reviews?.map((reviews) => (
-              <ReviewCard
-              key={reviews._id}
-              reviews={reviews} />
+              <ReviewCard key={reviews._id} reviews={reviews} />
             ))}
           </div>
         </div>
