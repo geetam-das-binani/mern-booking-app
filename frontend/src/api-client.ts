@@ -8,8 +8,10 @@ import {
   Hotels,
   LoginFormData,
   MyBookingsResponse,
+  Review,
   ReviewResponse,
   SearchParams,
+  UserType,
 } from "./types/types";
 import {
   PaymentIntentResponse,
@@ -264,7 +266,9 @@ export const addReview = async (
   return data;
 };
 
-export const deleteReview = async (hotelId: string): Promise<ReviewResponse> => {
+export const deleteReview = async (
+  hotelId: string
+): Promise<ReviewResponse> => {
   const response = await fetch(
     `${API_BASE_URL}/api/v1/reviews/delete/${hotelId}`,
     {
@@ -272,6 +276,69 @@ export const deleteReview = async (hotelId: string): Promise<ReviewResponse> => 
       method: "POST",
     }
   );
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message);
+  }
+  return data;
+};
+
+// ! Admin endpoints
+export const getAllUsers = async (): Promise<UserType[]> => {
+  const response = await fetch(`${API_BASE_URL}/api/v1/allUsers`, {
+    credentials: "include",
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message);
+  }
+  return data;
+};
+
+export const deleteUser = async (userId: string): Promise<DataType> => {
+  const response = await fetch(`${API_BASE_URL}/api/v1/delete/${userId}`, {
+    credentials: "include",
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message);
+  }
+  return data;
+};
+
+export const getAllReviews = async (): Promise<Review[]> => {
+  const response = await fetch(`${API_BASE_URL}/api/v1/admin-get-reviews`, {
+    credentials: "include",
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message);
+  }
+  return data;
+};
+export const deleteReviewAdmin = async (reviewObj: {
+  hotelId: string;
+  reviewId: string;
+}): Promise<DataType> => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/v1/admin-delete-review/${reviewObj.hotelId}`,
+    {
+      credentials: "include",
+      method: "POST",
+      headers:{
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ reviewId: reviewObj.reviewId }),
+    }
+  );
+
   const data = await response.json();
 
   if (!response.ok) {

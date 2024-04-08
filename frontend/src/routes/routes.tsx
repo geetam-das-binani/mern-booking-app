@@ -4,6 +4,7 @@ import Layout from "../layout/Layout";
 import Protected from "../Protected/Protected";
 import Booking from "../pages/Booking";
 import Error from "../error/Error";
+
 const Register = lazy(() => import("../pages/Register"));
 const Homepage = lazy(() => import("../pages/Homepage"));
 const Login = lazy(() => import("../pages/Login"));
@@ -14,8 +15,13 @@ const Search = lazy(() => import("../pages/Search"));
 const Details = lazy(() => import("../pages/Details"));
 const MyBookings = lazy(() => import("../pages/MyBookings"));
 const Contact = lazy(() => import("../pages/Contact"));
-const Profile = lazy(() => import("../pages/Profile"))
+const Profile = lazy(() => import("../pages/Profile"));
 const UpdateProfile = lazy(() => import("../pages/UpdateProfile"));
+const DashBoardData = lazy(() => import("../Admin/DashBoardData"));
+const DashboardUsers = lazy(() => import("../Admin/Users"));
+const DashboardReviews = lazy(() => import("../Admin/Reviews"));
+const DashboardHotels = lazy(() => import("../Admin/DashboardHotels"));
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -80,7 +86,7 @@ export const router = createBrowserRouter([
       },
     ],
   },
-
+  // !Protected Routes for logged in users
   {
     path: "/",
     element: <Protected />,
@@ -97,7 +103,8 @@ export const router = createBrowserRouter([
               </Suspense>
             ),
             errorElement: <Error />,
-          },{
+          },
+          {
             path: "update",
             element: (
               <Suspense fallback={<div>Loading...</div>}>
@@ -146,6 +153,52 @@ export const router = createBrowserRouter([
               </Suspense>
             ),
             errorElement: <Error />,
+          },
+        ],
+      },
+    ],
+  },
+
+  // !Admin Routes Protected
+  {
+    path: "/",
+    element: <Protected adminOnly={true} />,
+    children: [
+      {
+        path: "",
+        element: <Layout />,
+        children: [
+          {
+            path: "dashboard",
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <DashBoardData />
+              </Suspense>
+            ),
+          },
+          {
+            path: "dashboard/users",
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <DashboardUsers />
+              </Suspense>
+            ),
+          },
+          {
+            path: "dashboard/reviews",
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <DashboardReviews />
+              </Suspense>
+            ),
+          },
+          {
+            path: "dashboard/hotels",
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <DashboardHotels />
+              </Suspense>
+            ),
           },
         ],
       },

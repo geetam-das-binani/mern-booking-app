@@ -4,12 +4,10 @@ import { useSelector } from "react-redux";
 
 import SignOutButton from "./SignOutButton";
 const Header = () => {
-  const { isAuthenticated,user } = useSelector(
+  const { isAuthenticated, user } = useSelector(
     (state: { authUser: UserState }) => state.authUser
   );
 
-  
-  
   return (
     <div className="bg-blue-800 py-6">
       <div className="container mx-auto flex justify-between">
@@ -19,13 +17,13 @@ const Header = () => {
         <span className="flex space-x-2">
           {isAuthenticated ? (
             <>
-             <Link
+              <Link
                 className="flex items-center text-white
               px-3 font-bold hover:bg-blue-600
               "
                 to="/"
               >
-               Home
+                Home
               </Link>
               <Link
                 className="flex items-center text-white
@@ -41,20 +39,29 @@ const Header = () => {
               "
                 to="/profile"
               >
-               Profile
+                Profile
               </Link>
-             {
-              user?.isAdmin  && (
-                <Link
-                className="flex items-center text-white
+              {user?.isAdmin && (
+                <>
+                  {" "}
+                  <Link
+                    className="flex items-center text-white
                px-3 font-bold hover:bg-blue-600
                "
-                to="/my-hotels"
-              >
-                My Hotels
-              </Link>
-              )
-             }
+                    to="/my-hotels"
+                  >
+                    My Hotels
+                  </Link>
+                  <Link
+                    className="flex items-center text-white
+               px-3 font-bold hover:bg-blue-600
+               "
+                    to="/dashboard"
+                  >
+                    Dashboard
+                  </Link>
+                </>
+              )}
               <SignOutButton />
             </>
           ) : (

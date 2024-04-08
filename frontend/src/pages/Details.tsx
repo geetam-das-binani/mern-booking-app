@@ -131,9 +131,11 @@ const Details = () => {
           <p className="text-2xl font-bold">Reviews</p>
 
           <div className="flex gap-2 w-full md:h-[150px] p-1 ">
-            {hotelData?.hotel?.reviews?.map((reviews) => (
-              <ReviewCard key={reviews._id} reviews={reviews} />
-            ))}
+            {hotelData?.hotel?.reviews?.map((review) =>
+              
+                <ReviewCard key={review._id} review={review} />
+              
+            )}
           </div>
         </div>
       )}

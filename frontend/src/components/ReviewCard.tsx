@@ -1,8 +1,8 @@
 import { ReviewType } from "../../../backend/src/shared/types";
 
-const ReviewCard = ({ reviews }: { reviews: ReviewType }) => {
+const ReviewCard = ({ review }: { review: ReviewType }) => {
+ 
 
-  
   return (
     <div
       className="bg-gray-100 border
@@ -12,16 +12,16 @@ const ReviewCard = ({ reviews }: { reviews: ReviewType }) => {
       <div>
         <img
           className="w-12 h-12 rounded-full"
-          src={reviews.avatar}
-          alt={reviews.name}
+          src={review.avatar}
+          alt={review.name}
         />
       </div>
       <div className="flex flex-col justify-center items-center">
-        <h4 className="font-bold">{reviews.name}</h4>
-        <h4 className="font-semibold">{reviews.comment}</h4>
+        <h4 className="font-bold">{review.name}</h4>
+        <h4 className="font-semibold">{review.comment}</h4>
         <h4>
           {" "}
-          {[...new Array(reviews.rating).keys()].map((star) => (
+          {[...new Array(review.rating).keys()].map((star) => (
             <span key={star}>⭐</span>
           ))}
         </h4>

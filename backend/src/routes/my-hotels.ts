@@ -4,7 +4,7 @@ import {
   hotelValidator,
   validator,
 } from "../validator/validator";
-import { verifyToken } from "../middlewares/auth.middleware";
+import { authorizeRoles, verifyToken } from "../middlewares/auth.middleware";
 import {
   createHotel,
   getMyHotels,
@@ -14,10 +14,11 @@ import {
   searchHandler,
   getAllMyBookings,
   reviewHandler,
-  deleteHandler
+  deleteHandler,
+  adminReviewsDeleteHandler,
+  adminAllReviewsHandler
 } from "../controllers/hotels.controllers";
 import { upload } from "../multer/multer";
-
 
 const router = express.Router();
 router.route("/allhotels").get(getAllHotels);
@@ -28,28 +29,32 @@ router
 
 router.use(verifyToken);
 //! user have to be logged in for accessing below routes
-router.post(
-  "/create-hotel",
-
-  hotelValidator(),
-  upload.array("imageFiles", 6),
-  createHotel
-);
-router.get("/get-hotels", getMyHotels);
-
-router.put(
-  "/edit/:id",
-  hotelValidator(),
-  upload.array("imageFiles", 6),
-  editHotel
-);
-
 router.get(
   "/mybookings",
 
   getAllMyBookings
 );
-router.post("/reviews/:id",reviewHandler)
-router.post("/reviews/delete/:id",deleteHandler)
+router.post("/reviews/delete/:id", deleteHandler);
+router.post("/reviews/:id", reviewHandler);
 
+// ! Admin Protected Routes
+router.get("/get-hotels", authorizeRoles, getMyHotels);
+router.post(
+  "/create-hotel",
+
+  hotelValidator(),
+  upload.array("imageFiles", 6),
+  authorizeRoles,
+  createHotel
+);
+
+router.put(
+  "/edit/:id",
+  hotelValidator(),
+  upload.array("imageFiles", 6),
+  authorizeRoles,
+  editHotel
+);
+router.get("/admin-get-reviews", authorizeRoles, adminAllReviewsHandler);
+router.post("/admin-delete-review/:id", authorizeRoles, adminReviewsDeleteHandler);
 export { router };

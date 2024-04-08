@@ -72,4 +72,5 @@ export type ReviewType = {
   name: string;
   avatar: string;
   hotelId?: string;
+  createdAt?: Date;
 };

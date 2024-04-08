@@ -71,6 +71,10 @@ const hotelSchema = new Schema<HotelType>(
           type: String,
           required: true,
         },
+        createdAt: {
+          default: () => Date.now(),
+          type: Date,
+        },
       },
     ],
     bookings: [bookingSchema],

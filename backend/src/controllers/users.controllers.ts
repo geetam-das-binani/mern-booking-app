@@ -5,20 +5,21 @@ import { User } from "../models/user";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { v2 as cloudinary } from "cloudinary";
+import hotel from "../models/hotel";
+
 // ! Register a user
 const registerHandler = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
-   
     let user = await User.findOne({ email: req.body.email });
     if (user) {
       return next(new ErrorHandler("user already exists", 400));
     }
 
     const photo = req.file as Express.Multer.File;
-   
+    if(!photo){
+      return next(new ErrorHandler("Please upload a photo", 400));
+    }
 
-    
-    
     const b64 = Buffer.from(photo.buffer).toString("base64");
     let dataURI = `data:${photo.mimetype};base64,${b64}`;
     const cloudinaryRes = await cloudinary.uploader.upload(dataURI, {
@@ -145,10 +146,45 @@ const getProfileDetails = catchAsyncErrors(
     });
   }
 );
+
+const getAllUsers = catchAsyncErrors(async (req: Request, res: Response) => {
+  const users = await User.where({
+    isAdmin: false,
+    _id: { $ne: process.env.ADMIN_ID },
+  }).select("-isAdmin");
+  console.log(users);
+  
+  res.json(users);
+});
+
+const deleteUser = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.params.id as string;
+    if (!userId) {
+      return next(new ErrorHandler("User not found", 404));
+    }
+    const user = await User.findByIdAndDelete(userId);
+  
+    
+    if (!user?._id) {
+      return next(new ErrorHandler("User not found", 404));
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "User deleted successfully",
+    });
+  }
+);
+ 
+
 export {
   registerHandler,
   loginHandler,
   logoutHandler,
   getProfileDetails,
   updateHandler,
+  getAllUsers,
+  deleteUser,
+ 
 };

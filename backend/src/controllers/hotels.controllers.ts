@@ -9,53 +9,7 @@ import {
   ReviewType,
 } from "../shared/types";
 
-const createHotel = catchAsyncErrors(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const ishotelExists = await Hotel.findOne({
-      name: {
-        $regex: req.body.name,
-        $options: "i",
-      },
-    });
-    if (ishotelExists) {
-      return next(new ErrorHandler("Hotel already exists", 400));
-    }
-    const imageFiles = req.files as Express.Multer.File[];
-    const hotel: HotelType = req.body;
-
-    //! upload the images to cloudinary
-
-    const imageUrlsFromCloudinary = await uploadImages(imageFiles);
-
-    hotel.userId = req.user;
-    hotel.imageUrls = imageUrlsFromCloudinary as string[];
-    hotel.lastUpdated = new Date();
-
-    const newHotel = await Hotel.create(hotel);
-    if (!newHotel) {
-      return next(new ErrorHandler("Hotel not created", 400));
-    }
-
-    return res.status(201).json({
-      success: true,
-      hotel: newHotel,
-      message: "Hotel created successfully",
-    });
-  }
-);
-
-const getMyHotels = catchAsyncErrors(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const myHotels = await Hotel.find({ userId: req.user });
-
-    return res.status(200).json({
-      success: true,
-      hotel: myHotels,
-      message: "My hotels fetched successfully",
-    });
-  }
-);
-
+// !  user controllers
 const getSingleHotelDetails = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     const existingHotel = await Hotel.findById(req.params.id);
@@ -66,38 +20,6 @@ const getSingleHotelDetails = catchAsyncErrors(
       success: true,
       hotel: existingHotel,
       message: "Hotel fetched successfully",
-    });
-  }
-);
-
-const editHotel = catchAsyncErrors(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const imageFiles = req.files as Express.Multer.File[];
-    let imageUrls = req.body.imageUrls;
-
-    //! upload the images to cloudinary
-    const imageUrlsFromCloudinary = await uploadImages(imageFiles);
-
-    req.body.imageUrls = [...(imageUrls || []), ...imageUrlsFromCloudinary];
-
-    req.body.lastUpdated = new Date();
-    const updatedHotel = await Hotel.findByIdAndUpdate(
-      req.params.id,
-      {
-        $set: req.body,
-      },
-      {
-        new: true,
-      }
-    );
-
-    if (!updatedHotel) {
-      return next(new ErrorHandler("Hotel not found", 404));
-    }
-    res.status(201).json({
-      success: true,
-      hotel: updatedHotel,
-      message: "Hotel updated successfully",
     });
   }
 );
@@ -260,9 +182,137 @@ const deleteHandler = catchAsyncErrors(
       (review) => review.userId?.toString() !== req.user.toString()
     );
     hotel!.reviews = updatedReviews;
-    await hotel.save()
+    await hotel.save();
 
     return res.status(200).json({
+      success: true,
+      message: "Review deleted successfully",
+    });
+  }
+);
+
+//! Admin Protected Controllers
+const createHotel = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const ishotelExists = await Hotel.findOne({
+      name: {
+        $regex: req.body.name,
+        $options: "i",
+      },
+    });
+    if (ishotelExists) {
+      return next(new ErrorHandler("Hotel already exists", 400));
+    }
+    const imageFiles = req.files as Express.Multer.File[];
+    const hotel: HotelType = req.body;
+
+    //! upload the images to cloudinary
+
+    const imageUrlsFromCloudinary = await uploadImages(imageFiles);
+
+    hotel.userId = req.user;
+    hotel.imageUrls = imageUrlsFromCloudinary as string[];
+    hotel.lastUpdated = new Date();
+
+    const newHotel = await Hotel.create(hotel);
+    if (!newHotel) {
+      return next(new ErrorHandler("Hotel not created", 400));
+    }
+
+    return res.status(201).json({
+      success: true,
+      hotel: newHotel,
+      message: "Hotel created successfully",
+    });
+  }
+);
+const editHotel = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const imageFiles = req.files as Express.Multer.File[];
+    let imageUrls = req.body.imageUrls;
+
+    //! upload the images to cloudinary
+    const imageUrlsFromCloudinary = await uploadImages(imageFiles);
+
+    req.body.imageUrls = [...(imageUrls || []), ...imageUrlsFromCloudinary];
+
+    req.body.lastUpdated = new Date();
+    const updatedHotel = await Hotel.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: req.body,
+      },
+      {
+        new: true,
+      }
+    );
+
+    if (!updatedHotel) {
+      return next(new ErrorHandler("Hotel not found", 404));
+    }
+    res.status(201).json({
+      success: true,
+      hotel: updatedHotel,
+      message: "Hotel updated successfully",
+    });
+  }
+);
+
+const getMyHotels = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const myHotels = await Hotel.find({ userId: req.user });
+
+    return res.status(200).json({
+      success: true,
+      hotel: myHotels,
+      message: "My hotels fetched successfully",
+    });
+  }
+);
+
+const adminAllReviewsHandler = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const allHotelsWithReviews = await Hotel.find({
+      reviews: {
+        $exists: true,
+      },
+    });
+    const transformedReviews = allHotelsWithReviews.map((hotel) => ({
+      _id: hotel._id,
+      reviews: hotel.reviews.filter(
+        (review) => review.userId?.toString() !== process.env.ADMIN_ID
+      )
+    }));
+    res.status(200).json(transformedReviews);
+  }
+);
+
+const adminReviewsDeleteHandler = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const hotelId = req.params.id as string;
+
+    if (!hotelId) {
+      return next(new ErrorHandler("Hotel not found", 404));
+    }
+    const { reviewId }: { reviewId: string } = req.body;
+    if (!reviewId) {
+      return next(new ErrorHandler("Review not found", 404));
+    }
+    const hotel = await Hotel.findById(hotelId);
+    if (!hotel) return next(new ErrorHandler("Hotel not found", 404));
+
+    const updatedReviews = await Hotel.findByIdAndUpdate(
+      hotelId,
+      {
+        $pull: {
+          reviews: {
+            _id: reviewId,
+          },
+        },
+      },
+      { new: true }
+    );
+    res.status(200).json({
       success: true,
       message: "Review deleted successfully",
     });
@@ -358,4 +408,6 @@ export {
   getAllHotels,
   reviewHandler,
   deleteHandler,
+  adminReviewsDeleteHandler,
+  adminAllReviewsHandler,
 };

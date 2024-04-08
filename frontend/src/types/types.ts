@@ -171,3 +171,9 @@ export type ReviewResponse={
   message:string;
   success:boolean
 }
+
+export type Review ={
+_id:string;
+reviews:ReviewType[]
+
+}
