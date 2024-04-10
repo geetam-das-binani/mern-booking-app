@@ -14,7 +14,7 @@ const Dashboard = (WrappedComponent: React.ComponentType<{}>) => () => {
     "
     >
       <Sidebar />
-      <div className="overflow-y-scroll overflow-hidden h-[400px] w-[880px] relative">
+      <div className="overflow-y-scroll overflow-hidden h-[400px] w-[900px] relative">
         <WrappedComponent />
       </div>
     </div>

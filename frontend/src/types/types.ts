@@ -86,6 +86,7 @@ export type HotelType = {
   starRating: number;
   lastUpdated: Date;
   reviews:ReviewType[]
+  createdAt?: Date;
 };
 
 export type SearchCriteria = {

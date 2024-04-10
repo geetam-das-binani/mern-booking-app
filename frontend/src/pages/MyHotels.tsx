@@ -6,17 +6,13 @@ import * as apiClient from "../api-client";
 const MyHotels = () => {
   const {
     data: hotelData,
-    failureReason,
-    error,
+    
   } = useQuery({
     queryKey: ["hotels"],
     queryFn: apiClient.getMyHotels,
   });
 
-  if (error) {
-    console.log(failureReason?.message);
-    console.log(error?.message);
-  }
+ 
 
   if (!hotelData?.hotel?.length) {
     return <div>No Hotels Found</div>;
