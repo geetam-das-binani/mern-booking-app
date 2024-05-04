@@ -16,7 +16,10 @@ import {
   reviewHandler,
   deleteHandler,
   adminReviewsDeleteHandler,
-  adminAllReviewsHandler
+  adminAllReviewsHandler,
+  allOrdersHandler,
+  getSingleOrderDetailAdmin,
+  deteleOrderAmin
 } from "../controllers/hotels.controllers";
 import { upload } from "../multer/multer";
 
@@ -57,4 +60,8 @@ router.put(
 );
 router.get("/admin-get-reviews", authorizeRoles, adminAllReviewsHandler);
 router.post("/admin-delete-review/:id", authorizeRoles, adminReviewsDeleteHandler);
+
+router.get("/all-orders",authorizeRoles,allOrdersHandler)
+router.get("/admin-single-order-detail/:hotelId/:bookingId",authorizeRoles,getSingleOrderDetailAdmin)
+router.post("/admin-delete-order/:hotelId",authorizeRoles,deteleOrderAmin)
 export { router };

@@ -9,19 +9,17 @@ const AddHotel = () => {
   const dispatch = useDispatch();
   const { mutate, isPending } = useMutation({
     mutationFn: apiClient.addMyHotel,
-    onSuccess: (data:HotelData) => {
+    onSuccess: (data: HotelData) => {
       dispatch(showToastMessage({ message: data.message, type: "SUCCESS" }));
     },
     onError: (error: Error) => {
-     
-     
       dispatch(showToastMessage({ message: error.message, type: "ERROR" }));
     },
   });
-  const handleSave=(hotelFormData:FormData)=>{
-    mutate(hotelFormData)
-  }
-  return <ManageHotelForm onSave={handleSave} isPending={isPending}  />;
+  const handleSave = (hotelFormData: FormData) => {
+    mutate(hotelFormData);
+  };
+  return <ManageHotelForm onSave={handleSave} isPending={isPending} />;
 };
 
 export default AddHotel;

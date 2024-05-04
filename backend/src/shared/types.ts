@@ -1,6 +1,5 @@
 import { Schema } from "mongoose";
 
-
 export type HotelSearchResponse = {
   data: HotelType[];
   pagination: {
@@ -28,6 +27,7 @@ export type BookingType = {
   childCount: number;
   totalPrice: number;
   paymentStatus: string;
+  createdAt?: Date;
 };
 
 
@@ -65,7 +65,7 @@ export interface MyBookingsData extends HotelType {
 }
 
 export type ReviewType = {
-  _id?:string
+  _id?: string;
   userId?: string;
   rating: number;
   comment: string;

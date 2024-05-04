@@ -14,7 +14,7 @@ import Dashboard from "./Dashboard";
 import { Fragment } from "react/jsx-runtime";
 import DeleteReviewModal from "../AdminModal/DeleteReviewModal";
 
-const Reviews = () => {
+const DashBoardReviews = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { data, isError, error } = useQuery({
     queryFn: apiClient.getAllReviews,
@@ -40,9 +40,11 @@ const Reviews = () => {
         </Thead>
         <Tbody>
           {data?.map((hotel) => (
-            <Fragment>
+            <Fragment key={hotel._id}>
               {hotel?.reviews.map((review) => (
-                <Tr className="hover:bg-blue-600 hover:text-white font-semibold duration-300 ">
+                <Tr key={review._id}
+                className="hover:bg-blue-600 hover:text-white
+                 font-semibold duration-300 ">
                   <Td className="w-4">{review._id}</Td>
                   <Td className="w-4">{review.comment}</Td>
                   <Td className="w-4">{review.name}</Td>
@@ -54,8 +56,9 @@ const Reviews = () => {
                       : "N/A"}
                   </Td>
                   <Td
-                    isNumeric
-                    className={`w-1
+                    
+                    
+                    className={`text-center w-1
                   ${review.rating >= 4 ? "text-green-600" : "text-red-600"}
                   `}
                   >
@@ -80,4 +83,4 @@ const Reviews = () => {
   );
 };
 
-export default Dashboard(Reviews);
+export default Dashboard(DashBoardReviews);

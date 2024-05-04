@@ -8,8 +8,9 @@ import {
   Tr,
   Th,
   Td,
-  TableContainer
+  TableContainer,
 } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 
 const DashboardHotels = () => {
   const { data: hotelData } = useQuery({
@@ -33,28 +34,43 @@ const DashboardHotels = () => {
         </Thead>
         <Tbody>
           {hotelData?.hotel?.map((hotel) => (
-            <Tr className="hover:bg-blue-600 hover:text-white font-semibold duration-300 ">
-              <Td className="w-2">{hotel?._id}</Td>
-              <Td className="w-2">{hotel?.name}</Td>
-              <Td className="w-2">{hotel.pricePerNight}</Td>
-              <Td className="w-2">{hotel.starRating}</Td>
-              <Td className="w-2">
+            <Tr
+            key={hotel._id}
+            className="hover:bg-blue-600 hover:text-white font-semibold duration-300 ">
+              <Td className="w-1">{hotel?._id}</Td>
+              <Td className="w-1">{hotel?.name}</Td>
+              <Td className="w-1">₹{hotel.pricePerNight}</Td>
+
+              <Td
+                className={` text-center
+                    w-1
+                    ${hotel.starRating >= 4 ? "text-green-600" : "text-red-600"}
+                    `}
+              >
+                {hotel.starRating}
+              </Td>
+              <Td className="w-1">
                 {hotel?.createdAt
                   ? new Date(hotel.createdAt).toDateString()
                   : "N/A"}
               </Td>
               <Td>
-                <span className="flex">
-                {hotel.imageUrls?.slice(0, 2).map((image) => (
-                  <img
-                    className="w-4 h-4 rounded-full"
-                    src={image}
-                    alt={hotel.name}
-                  />
-                ))}</span>
+                <img
+                  className="w-10 h-10 rounded-full"
+                  src={hotel.imageUrls[0]}
+                  alt={hotel.name}
+                />
               </Td>
               <Td className="w-3 cursor-pointer">
-                {/* edit and add buttons  */}
+                <span className="flex justify-between items-center">
+                  
+                  <Link to={`/dashboard/edit-hotel/${hotel._id}`}>
+                    <i className="ri-pencil-fill text-2xl"></i>
+                  </Link>
+                  <Link to="/dashboard/add-hotel">
+                    <i className="ri-add-fill text-2xl"></i>
+                  </Link>
+                </span>
               </Td>
             </Tr>
           ))}

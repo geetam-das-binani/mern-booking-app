@@ -41,7 +41,8 @@ const Users = () => {
         </Thead>
         <Tbody>
           {data?.map((user) => (
-            <Tr className="hover:bg-blue-600 hover:text-white font-semibold duration-300 ">
+            <Tr  key={user._id}
+            className="hover:bg-blue-600 hover:text-white font-semibold duration-300 ">
               <Td className="w-3">{user._id}</Td>
               <Td className="w-3">{user.email}</Td>
               <Td className="w-3">

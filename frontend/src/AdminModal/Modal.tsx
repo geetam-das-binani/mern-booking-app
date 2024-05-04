@@ -4,7 +4,7 @@ import {
   ModalContent,
   ModalHeader,
   ModalFooter,
-  ModalBody,
+
   ModalCloseButton,
   Button,
 } from "@chakra-ui/react";
@@ -15,14 +15,11 @@ const Modal = ({ isOpen, onClose, handleDelete, onOpen }: ModalProps) => {
     <>
       <i onClick={onOpen} className=" ri-delete-bin-fill text-xl"></i>
 
-      <ChakraModal
-        
-       isCentered isOpen={isOpen} onClose={onClose}>
+      <ChakraModal isCentered isOpen={isOpen} onClose={onClose}>
         <ModalOverlay backgroundColor={"blackAlpha.300"} />
         <ModalContent>
           <ModalHeader>Are you Sure you want to delete ?</ModalHeader>
           <ModalCloseButton />
-          <ModalBody></ModalBody>
 
           <ModalFooter>
             <Button colorScheme="red" mr={3} onClick={onClose}>

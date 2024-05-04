@@ -23,14 +23,18 @@ const Homepage = () => {
           <div className="grid md:grid-cols-2 grid-cols-1 gap-4">
             {
               topRowHotels.map(hotel=>(
-                 <LatestDestinationCard hotel={hotel}/>
+                 <LatestDestinationCard 
+                 key={hotel._id}
+                 hotel={hotel}/>
               ))
             }
           </div>
           <div className="grid md:grid-cols-3 grid-cols-1 gap-4">
           {
               bottomRowHotels.map(hotel=>(
-                 <LatestDestinationCard hotel={hotel}/>
+                 <LatestDestinationCard
+                 key={hotel._id}
+                 hotel={hotel}/>
               ))
             }
           </div>

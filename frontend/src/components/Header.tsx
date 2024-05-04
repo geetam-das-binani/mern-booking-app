@@ -62,7 +62,7 @@ const Header = () => {
                   </Link>
                 </>
               )}
-              <SignOutButton />
+              <SignOutButton  />
             </>
           ) : (
             <Link

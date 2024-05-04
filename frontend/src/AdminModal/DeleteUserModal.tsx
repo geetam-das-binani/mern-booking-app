@@ -13,6 +13,7 @@ export type ModalProps = {
   handleDelete?: () => void;
   reviewId?: string;
   hotelId?: string;
+  bookingId?:string
 };
 const DeleteUserModal = ({ isOpen, onClose, userId, onOpen }: ModalProps) => {
   const queryClient = useQueryClient();

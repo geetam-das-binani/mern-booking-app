@@ -5,6 +5,7 @@ import {
   HotelData,
   HotelDataType,
   HotelSearchResponse,
+  HotelType,
   Hotels,
   LoginFormData,
   MyBookingsResponse,
@@ -14,6 +15,7 @@ import {
   UserType,
 } from "./types/types";
 import {
+  BookingType,
   PaymentIntentResponse,
   ReviewType,
 } from "../../backend/src/shared/types";
@@ -220,7 +222,6 @@ export const fetchMyBookings = async (): Promise<{
     method: "GET",
   });
   const data = await response.json();
-  console.log(data);
 
   if (!response.ok) {
     throw new Error(data.message);
@@ -332,8 +333,8 @@ export const deleteReviewAdmin = async (reviewObj: {
     {
       credentials: "include",
       method: "POST",
-      headers:{
-        "Content-Type": "application/json"
+      headers: {
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ reviewId: reviewObj.reviewId }),
     }
@@ -346,3 +347,82 @@ export const deleteReviewAdmin = async (reviewObj: {
   }
   return data;
 };
+
+export const getAllOrdersAdmin = async (): Promise<
+  {
+    _id: string;
+    hotelName: string;
+    bookings: BookingType[];
+  }[]
+> => {
+  const response = await fetch(`${API_BASE_URL}/api/v1/all-orders`, {
+    credentials: "include",
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message);
+  }
+  return data;
+};
+
+export const getSingleBookingDetailAdmin = async (
+  hotelId: string,
+  bookingId: string
+): Promise<MyBookingsResponse> => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/v1/admin-single-order-detail/${hotelId}/${bookingId}`,
+    {
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message);
+  }
+  return data;
+};
+
+export const deleteOrderAdmin = async (
+  hotelId: string,
+  bookingId: string
+): Promise<DataType> => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/v1/admin-delete-order/${hotelId}`,
+    {
+      credentials: "include",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ bookingId }),
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message);
+  }
+  return data;
+};
+export const gettDashBoardData=async()=>{
+  const response = await fetch(
+    `${API_BASE_URL}/api/v1/admin/dashboard-data`,
+    {
+      credentials: "include",
+     
+      
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message);
+  }
+  return data;
+}

@@ -77,11 +77,7 @@ const getAllMyBookings = catchAsyncErrors(
     }).sort({
       createdAt: -1,
     });
-    if (allHotelsWithMyIdInBookings.length === 0) {
-      return res.json({
-        hotel: [],
-      });
-    }
+
     const myBookings: MyBookingsData[] = allHotelsWithMyIdInBookings.map(
       (hotel): MyBookingsData => {
         const bookings = hotel.bookings.filter(
@@ -281,7 +277,7 @@ const adminAllReviewsHandler = catchAsyncErrors(
       _id: hotel._id,
       reviews: hotel.reviews.filter(
         (review) => review.userId?.toString() !== process.env.ADMIN_ID
-      )
+      ),
     }));
     res.status(200).json(transformedReviews);
   }
@@ -301,7 +297,7 @@ const adminReviewsDeleteHandler = catchAsyncErrors(
     const hotel = await Hotel.findById(hotelId);
     if (!hotel) return next(new ErrorHandler("Hotel not found", 404));
 
-    const updatedReviews = await Hotel.findByIdAndUpdate(
+    await Hotel.findByIdAndUpdate(
       hotelId,
       {
         $pull: {
@@ -315,6 +311,90 @@ const adminReviewsDeleteHandler = catchAsyncErrors(
     res.status(200).json({
       success: true,
       message: "Review deleted successfully",
+    });
+  }
+);
+
+const allOrdersHandler = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const orders = await Hotel.find({
+      bookings: {
+        $exists: true,
+      },
+    });
+
+    if (!orders.length) {
+      return res.status(400).json({
+        orders: [],
+      });
+    }
+    const transformedOrders = orders.map((hotel) => {
+      return {
+        _id: hotel._id,
+        hotelName: hotel.name,
+        bookings: hotel.bookings,
+      };
+    });
+
+    res.json(transformedOrders);
+  }
+);
+const getSingleOrderDetailAdmin = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { hotelId, bookingId } = req.params;
+    if (!hotelId || !bookingId) {
+      return next(new ErrorHandler("Hotel or booking not found", 404));
+    }
+    const hotel = await Hotel.findOne({
+      _id: hotelId,
+      bookings: {
+        $elemMatch: {
+          _id: { $eq: bookingId },
+        },
+      },
+    });
+    if (!hotel)
+      return next(new ErrorHandler("Hotel or booking not found", 404));
+
+    const singleBookingWithHotel = {
+      ...hotel?.toObject(),
+      bookings: hotel?.bookings?.filter(
+        (booking) => booking._id.toString() === bookingId
+      ),
+    };
+    res.json(singleBookingWithHotel);
+  }
+);
+
+const deteleOrderAmin = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { hotelId } = req.params;
+    if (!hotelId) {
+      return next(new ErrorHandler("Hotel not found", 404));
+    }
+    if (!req.body.bookingId) {
+      return next(new ErrorHandler("Booking not found", 404));
+    }
+    const hotel = await Hotel.findById(hotelId);
+    if (!hotel) return next(new ErrorHandler("Hotel not found", 404));
+    console.log(hotelId, req.body.bookingId);
+
+    await Hotel.findByIdAndUpdate(
+      hotelId,
+      {
+        $pull: {
+          bookings: {
+            _id: req.body.bookingId,
+          },
+        },
+      },
+      { new: true }
+    );
+    
+
+    res.status(200).json({
+      success: true,
+      message: "Order deleted successfully",
     });
   }
 );
@@ -397,7 +477,6 @@ function constructSearchQuery(queryParams: any) {
 
   return constructedQuery;
 }
-
 export {
   createHotel,
   getMyHotels,
@@ -410,4 +489,7 @@ export {
   deleteHandler,
   adminReviewsDeleteHandler,
   adminAllReviewsHandler,
+  allOrdersHandler,
+  getSingleOrderDetailAdmin,
+  deteleOrderAmin,
 };

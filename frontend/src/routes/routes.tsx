@@ -4,11 +4,12 @@ import Layout from "../layout/Layout";
 import Protected from "../Protected/Protected";
 import Booking from "../pages/Booking";
 import Error from "../error/Error";
+import DashboardOrderDetails from "../Admin/DashboardOrderDetails";
 
+const AddHotel = lazy(() => import("../pages/AddHotel"));
 const Register = lazy(() => import("../pages/Register"));
 const Homepage = lazy(() => import("../pages/Homepage"));
 const Login = lazy(() => import("../pages/Login"));
-const AddHotel = lazy(() => import("../pages/AddHotel"));
 const MyHotels = lazy(() => import("../pages/MyHotels"));
 const EditHotel = lazy(() => import("../pages/EditHotel"));
 const Search = lazy(() => import("../pages/Search"));
@@ -18,9 +19,10 @@ const Contact = lazy(() => import("../pages/Contact"));
 const Profile = lazy(() => import("../pages/Profile"));
 const UpdateProfile = lazy(() => import("../pages/UpdateProfile"));
 const DashBoardData = lazy(() => import("../Admin/DashBoardData"));
-const DashboardUsers = lazy(() => import("../Admin/Users"));
-const DashboardReviews = lazy(() => import("../Admin/Reviews"));
+const DashboardUsers = lazy(() => import("../Admin/DashBoardUsers"));
+const DashboardReviews = lazy(() => import("../Admin/DashBoardReviews"));
 const DashboardHotels = lazy(() => import("../Admin/DashboardHotels"));
+const DashboardOrders= lazy(() => import("../Admin/DashboardOrders"));
 
 export const router = createBrowserRouter([
   {
@@ -102,7 +104,7 @@ export const router = createBrowserRouter([
                 <Profile />
               </Suspense>
             ),
-            errorElement: <Error />,
+            errorElement: <Error />
           },
           {
             path: "update",
@@ -113,15 +115,7 @@ export const router = createBrowserRouter([
             ),
             errorElement: <Error />,
           },
-          {
-            path: "add-hotel",
-            element: (
-              <Suspense fallback={<div>Loading...</div>}>
-                <AddHotel />
-              </Suspense>
-            ),
-            errorElement: <Error />,
-          },
+          
           {
             path: "my-hotels",
             element: (
@@ -129,21 +123,13 @@ export const router = createBrowserRouter([
                 <MyHotels />
               </Suspense>
             ),
-            errorElement: <Error />,
+            errorElement: <Error />
           },
-          {
-            path: "edit-hotel/:hotelId",
-            element: (
-              <Suspense fallback={<div>Loading...</div>}>
-                <EditHotel />
-              </Suspense>
-            ),
-            errorElement: <Error />,
-          },
+          
           {
             path: "hotel/:hotelId/booking",
             element: <Booking />,
-            errorElement: <Error />,
+            errorElement: <Error />
           },
           {
             path: "my-bookings",
@@ -152,7 +138,7 @@ export const router = createBrowserRouter([
                 <MyBookings />
               </Suspense>
             ),
-            errorElement: <Error />,
+            errorElement: <Error />
           },
         ],
       },
@@ -175,6 +161,26 @@ export const router = createBrowserRouter([
                 <DashBoardData />
               </Suspense>
             ),
+            errorElement: <Error />
+          },
+         
+          {
+            path: "dashboard/add-hotel",
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <AddHotel />
+              </Suspense>
+            ),
+            errorElement: <Error />
+          },
+          {
+            path: "dashboard/edit-hotel/:hotelId",
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <EditHotel />
+              </Suspense>
+            ),
+            errorElement: <Error />
           },
           {
             path: "dashboard/users",
@@ -183,6 +189,7 @@ export const router = createBrowserRouter([
                 <DashboardUsers />
               </Suspense>
             ),
+            errorElement: <Error />
           },
           {
             path: "dashboard/reviews",
@@ -191,6 +198,7 @@ export const router = createBrowserRouter([
                 <DashboardReviews />
               </Suspense>
             ),
+            errorElement: <Error />
           },
           {
             path: "dashboard/hotels",
@@ -198,7 +206,29 @@ export const router = createBrowserRouter([
               <Suspense fallback={<div>Loading...</div>}>
                 <DashboardHotels />
               </Suspense>
+
             ),
+            errorElement: <Error />
+          },
+          {
+            path: "dashboard/orders",
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <DashboardOrders/>
+              </Suspense>
+
+            ),
+            errorElement: <Error />
+          },
+          {
+            path: "dashboard/booking/detail/:hotelId/:bookingId",
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <DashboardOrderDetails/>
+              </Suspense>
+
+            ),
+            errorElement: <Error />
           },
         ],
       },
@@ -206,6 +236,6 @@ export const router = createBrowserRouter([
   },
   {
     path: "*",
-    element: <div>Page Not Found</div>,
-  },
+    element: <div>Page Not Found</div>
+  }
 ]);

@@ -152,7 +152,7 @@ const getAllUsers = catchAsyncErrors(async (req: Request, res: Response) => {
     isAdmin: false,
     _id: { $ne: process.env.ADMIN_ID },
   }).select("-isAdmin");
-  console.log(users);
+
   
   res.json(users);
 });
