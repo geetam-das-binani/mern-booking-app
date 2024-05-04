@@ -66,7 +66,7 @@ const Sidebar = () => {
          hover:bg-blue-600 rounded-md mt-1"
           >
             <i className="ri-line-chart-fill mr-2 "></i>
-            <span>Stats</span>
+            <Link to={"/dashboard/stats"}>Stats</Link>
           </h1>
         </div>
         <div className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 hover:text-white text-black">

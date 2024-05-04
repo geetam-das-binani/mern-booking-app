@@ -5,7 +5,7 @@ import {
   HotelData,
   HotelDataType,
   HotelSearchResponse,
-  HotelType,
+  
   Hotels,
   LoginFormData,
   MyBookingsResponse,
