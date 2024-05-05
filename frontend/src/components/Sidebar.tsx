@@ -61,13 +61,13 @@ const Sidebar = () => {
             <i className="ri-chat-4-fill mr-2"></i>
             <span>Reviews</span>
           </Link>
-          <h1
+          <Link to={"/dashboard/stats"}
             className="cursor-pointer p-2 hover:text-white
-         hover:bg-blue-600 rounded-md mt-1"
+         hover:bg-blue-600 rounded-md mt-1 w-full block"
           >
             <i className="ri-line-chart-fill mr-2 "></i>
-            <Link to={"/dashboard/stats"}>Stats</Link>
-          </h1>
+            <span >Stats</span>
+          </Link>
         </div>
         <div className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 hover:text-white text-black">
           <i className="ri-logout-box-fill text-2xl "></i>

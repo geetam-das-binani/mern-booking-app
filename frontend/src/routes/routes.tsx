@@ -5,6 +5,7 @@ import Protected from "../Protected/Protected";
 import Booking from "../pages/Booking";
 import Error from "../error/Error";
 import DashboardOrderDetails from "../Admin/DashboardOrderDetails";
+import DashboardStats from "../Admin/DashboardCharts";
 
 const AddHotel = lazy(() => import("../pages/AddHotel"));
 const Register = lazy(() => import("../pages/Register"));
@@ -215,6 +216,16 @@ export const router = createBrowserRouter([
             element: (
               <Suspense fallback={<div>Loading...</div>}>
                 <DashboardOrders/>
+              </Suspense>
+
+            ),
+            errorElement: <Error />
+          },
+          {
+            path: "dashboard/stats",
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <DashboardStats/>
               </Suspense>
 
             ),
