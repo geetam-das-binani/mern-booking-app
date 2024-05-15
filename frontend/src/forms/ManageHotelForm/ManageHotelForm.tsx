@@ -49,9 +49,7 @@ const ManageHotelForm = ({ hotelData, onSave, isPending }: Props) => {
 
     onSave(formData);
   });
-  if (!hotelData) {
-    return <></>;
-  }
+
 
   return (
     <FormProvider {...formMethods}>
